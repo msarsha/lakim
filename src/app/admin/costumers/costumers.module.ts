@@ -14,4 +14,4 @@ import { CostumersPage } from './costumers.page';
   ],
   declarations: [CostumersPage]
 })
-export class Tab3PageModule {}
+export class CostumersModule {}

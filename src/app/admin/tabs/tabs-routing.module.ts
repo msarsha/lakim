@@ -4,7 +4,7 @@ import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
   {
-    path: 'tabs',
+    path: '',
     component: TabsPage,
     children: [
       {
@@ -13,7 +13,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../calendar/calendar.module').then(m => m.Tab1PageModule)
+              import('../calendar/calendar.module').then(m => m.CalendarModule)
           }
         ]
       },
@@ -23,7 +23,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../schedule/schedule.module').then(m => m.Tab2PageModule)
+              import('../schedule/schedule.module').then(m => m.ScheduleModule)
           }
         ]
       },
@@ -33,13 +33,13 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../costumers/costumers.module').then(m => m.Tab3PageModule)
+              import('../costumers/costumers.module').then(m => m.CostumersModule)
           }
         ]
       },
       {
         path: '',
-        redirectTo: '/tabs/calendar',
+        redirectTo: '/admin/tabs/calendar',
         pathMatch: 'full'
       }
     ]

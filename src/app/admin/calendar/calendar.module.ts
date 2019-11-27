@@ -3,15 +3,15 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SchedulePage } from './schedule.page';
+import {CalendarPage} from './calendar.page';
 
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
-    RouterModule.forChild([{ path: '', component: SchedulePage }])
+    RouterModule.forChild([{ path: '', component: CalendarPage }])
   ],
-  declarations: [SchedulePage]
+  declarations: [CalendarPage]
 })
-export class Tab2PageModule {}
+export class CalendarModule {}
