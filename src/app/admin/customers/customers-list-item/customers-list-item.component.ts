@@ -3,10 +3,10 @@ import {Costumer} from '../../../models';
 
 @Component({
   selector: 'app-costumers-list-item',
-  templateUrl: './costumers-list-item.component.html',
-  styleUrls: ['./costumers-list-item.component.scss'],
+  templateUrl: './customers-list-item.component.html',
+  styleUrls: ['./customers-list-item.component.scss'],
 })
-export class CostumersListItemComponent implements OnInit {
+export class CustomersListItemComponent implements OnInit {
   @Input() costumer: Costumer;
   constructor() { }
 

@@ -28,12 +28,12 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'costumers',
+        path: 'customers',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('../costumers/costumers.module').then(m => m.CostumersModule)
+              import('../customers/customers.module').then(m => m.CustomersModule)
           }
         ]
       },

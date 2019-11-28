@@ -6,7 +6,7 @@ import {map} from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class CostumersService {
+export class CustomersService {
 
   private costumers$ = this.db.collection<Costumer>('costumer-profiles').valueChanges();
 
