@@ -4,3 +4,7 @@ export interface Costumer {
   email: string;
   approved?: boolean;
 }
+
+export interface Settings {
+  appointment_time: number;
+}

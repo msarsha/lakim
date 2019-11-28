@@ -1,9 +1,27 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      שעות עבודה
-    </ion-title>
-  </ion-toolbar>
+	<ion-toolbar>
+		<ion-title>
+			שעות עבודה
+		</ion-title>
+	</ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+	<ng-container *ngIf="settings$ | async as settings">
+		<ion-list>
+			<ion-item>
+				<ion-label>אורך תור</ion-label>
+				<ion-select [value]="settings.appointment_time"
+										(ionChange)="onAppointmentTimeChanged($event)"
+										interface="action-sheet"
+										cancelText="ביטול"
+										placeholder="בחר אורך תור">
+					<ion-select-option [value]="15">15</ion-select-option>
+					<ion-select-option [value]="30">30</ion-select-option>
+					<ion-select-option [value]="45">45</ion-select-option>
+					<ion-select-option [value]="60">60</ion-select-option>
+				</ion-select>
+			</ion-item>
+		</ion-list>
+	</ng-container>
+</ion-content>

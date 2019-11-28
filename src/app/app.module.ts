@@ -11,6 +11,7 @@ import {AppComponent} from './app.component';
 import {AngularFireModule} from '@angular/fire';
 import {environment} from '../environments/environment';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,7 +21,8 @@ import {AngularFirestoreModule} from '@angular/fire/firestore';
     IonicModule.forRoot(),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    SharedModule
   ],
   providers: [
     StatusBar,
