@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-tab3',
@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['costumers.page.scss']
 })
 export class CostumersPage {
-
-  constructor() {}
+  constructor() {
+  }
 
 }

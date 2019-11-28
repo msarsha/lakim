@@ -1,0 +1,25 @@
+<ion-list>
+	<ion-list-header color="primary">
+		ממתינים לאישור
+	</ion-list-header>
+
+	<app-costumers-list-item
+					*ngFor="let costumer of waitingApproval$ | async"
+					[costumer]="costumer">
+		<ion-item-options side="end">
+			<ion-item-option color="success">אשר</ion-item-option>
+		</ion-item-options>
+	</app-costumers-list-item>
+
+	<ion-list-header color="primary">
+		מאושרים
+	</ion-list-header>
+
+	<app-costumers-list-item
+					*ngFor="let costumer of approved$ | async"
+					[costumer]="costumer">
+		<ion-item-options side="end">
+			<ion-item-option color="danger">בטל אישור</ion-item-option>
+		</ion-item-options>
+	</app-costumers-list-item>
+</ion-list>
