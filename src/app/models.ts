@@ -5,6 +5,13 @@ export interface Costumer {
   approved?: boolean;
 }
 
+export interface TimeRange {
+  from: string;
+  to: string;
+}
+
 export interface Settings {
-  appointment_time: number;
+  appointmentTime: number;
+  workingHours: TimeRange;
+  workingDays: number[];
 }
