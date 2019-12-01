@@ -7,26 +7,26 @@
 </ion-header>
 
 <ion-content>
-	<ng-container *ngIf="settings$ | async as settings">
+	<ng-container *ngIf="vm$ | async as vm">
 		<ion-list>
 			<ion-item>
 				<ion-label>אורך תור</ion-label>
-				<ion-select [value]="settings.appointmentTime"
+				<ion-select [value]="vm.appointmentTime"
 										(ionChange)="onAppointmentTimeChanged($event)"
 										interface="action-sheet"
 										cancelText="בטל"
 										placeholder="בחר אורך תור">
 					<ion-select-option
-									*ngFor="let hour of availableHours"
+									*ngFor="let hour of availableTimeIntervals"
 									[value]="hour">{{hour}}
 					</ion-select-option>
 				</ion-select>
 			</ion-item>
 			<ion-item>
 				<ion-label>ימי עבודה</ion-label>
-				<ion-select [value]="settings.workingDays"
+				<ion-select [value]="vm.workingDays"
 										(ionChange)="onAppointmentDaysChanged($event)"
-										interface="action-sheet"
+										interface="alert"
 										multiple
 										cancelText="בטל"
 										okText="שמור"
@@ -37,6 +37,28 @@
 					</ion-select-option>
 				</ion-select>
 			</ion-item>
+
+			<ion-item-group>
+				<ion-item-divider>
+					<ion-label>שעות עבודה</ion-label>
+				</ion-item-divider>
+				<ion-item>
+					<ion-datetime display-format="HH:mm"
+												picker-format="HH:mm"
+												placeholder="מ"
+												[value]="vm.workingHours.from"
+												(ionChange)="onFromChanged($event)"
+												[minuteValues]="[00, 30]"></ion-datetime>
+				</ion-item>
+				<ion-item>
+					<ion-datetime display-format="HH:mm"
+												placeholder="עד"
+												picker-format="HH:mm"
+												[value]="vm.workingHours.to"
+												(ionChange)="onToChanged($event)"
+												[minuteValues]="[00, 30]"></ion-datetime>
+				</ion-item>
+			</ion-item-group>
 		</ion-list>
 	</ng-container>
 </ion-content>

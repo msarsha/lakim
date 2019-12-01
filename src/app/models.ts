@@ -1,3 +1,13 @@
+export interface HoursMinutesPair {
+  hours: number;
+  minutes: number;
+}
+
+export interface WorkingHours {
+  from?: HoursMinutesPair | string;
+  to?: HoursMinutesPair | string;
+}
+
 export interface Costumer {
   name: string;
   id?: string;
@@ -5,13 +15,8 @@ export interface Costumer {
   approved?: boolean;
 }
 
-export interface TimeRange {
-  from: string;
-  to: string;
-}
-
 export interface Settings {
   appointmentTime: number;
-  workingHours: TimeRange;
+  workingHours: WorkingHours;
   workingDays: number[];
 }
