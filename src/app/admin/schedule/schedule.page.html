@@ -46,6 +46,8 @@
 					<ion-datetime display-format="HH:mm"
 												picker-format="HH:mm"
 												placeholder="מ"
+												cancelText="בטל"
+												doneText="שמור"
 												[value]="vm.workingHours.from"
 												(ionChange)="onFromChanged($event)"
 												[minuteValues]="[00, 30]"></ion-datetime>
@@ -54,6 +56,8 @@
 					<ion-datetime display-format="HH:mm"
 												placeholder="עד"
 												picker-format="HH:mm"
+												cancelText="בטל"
+												doneText="שמור"
 												[value]="vm.workingHours.to"
 												(ionChange)="onToChanged($event)"
 												[minuteValues]="[00, 30]"></ion-datetime>
