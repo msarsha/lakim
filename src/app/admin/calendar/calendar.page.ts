@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-tab1',
@@ -6,7 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['calendar.page.scss']
 })
 export class CalendarPage {
+  eventSource = [];
+  today = new Date();
 
-  constructor() {}
+  constructor() {
+  }
 
 }
