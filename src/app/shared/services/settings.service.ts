@@ -52,7 +52,6 @@ export class SettingsService {
     this.setWorkingHoursBS.asObservable()
   ])
       .pipe(tap(([workingHours, {pair, key}]) => {
-
         this.settingsDocument.update({
           workingHours: {...workingHours, [key]: pair}
         });
