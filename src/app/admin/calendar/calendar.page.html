@@ -7,11 +7,22 @@
 </ion-header>
 
 <ion-content>
+	<div class="header-container">
+		<ion-button (click)="setToday()" size="small" fill="clear">היום</ion-button>
+		<ion-label class="month-title ion-padding">
+			<h2>
+				{{title}}
+			</h2>
+		</ion-label>
+	</div>
 	<calendar [eventSource]="eventSource"
 						[currentDate]="today"
 						[calendarMode]="'month'"
-						step="30"
+						(onTimeSelected)="onTimeChanged($event)"
+						(onEventSelected)="onEventSelected($event)"
+						(onTitleChanged)="onTitleChanged($event)"
+						locale="he"
 						dir="rtl">
-
 	</calendar>
+
 </ion-content>

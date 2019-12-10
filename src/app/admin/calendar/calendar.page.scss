@@ -1,4 +1,18 @@
-.welcome-card img {
-  max-height: 35vh;
-  overflow: hidden;
+.month-title {
+  display: block;
+  text-align: center;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  ion-button{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-65%);
+  }
 }

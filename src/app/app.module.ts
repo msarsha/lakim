@@ -13,6 +13,10 @@ import {environment} from '../environments/environment';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
 import {SharedModule} from './shared/shared.module';
 
+import { registerLocaleData } from '@angular/common';
+import heLocale from '@angular/common/locales/he';
+registerLocaleData(heLocale);
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
