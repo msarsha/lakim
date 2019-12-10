@@ -4,7 +4,8 @@ import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/admin/tabs/calendar',
+    redirectTo: '/client',
+    // redirectTo: '/admin/tabs/calendar',
     pathMatch: 'full'
   },
   {
@@ -14,6 +15,10 @@ const routes: Routes = [
   {
     path: 'client',
     loadChildren: () => import('./client/client.module').then(m => m.ClientModule)
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)
   }
 ];
 
