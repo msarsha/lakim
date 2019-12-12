@@ -15,6 +15,7 @@ import {SharedModule} from './shared/shared.module';
 
 import { registerLocaleData } from '@angular/common';
 import heLocale from '@angular/common/locales/he';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 registerLocaleData(heLocale);
 
 @NgModule({
@@ -26,6 +27,7 @@ registerLocaleData(heLocale);
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    AngularFireAuthModule,
     SharedModule
   ],
   providers: [

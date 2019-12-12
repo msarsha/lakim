@@ -1,8 +1,8 @@
 <ion-content color="primary">
-  <div class="login-container">
-    <ion-input [clearInput]="true" inputmode="email" placeholder="אימייל"></ion-input>
-    <ion-input [clearInput]="true" placeholder="שם מלא"></ion-input>
-    <ion-input [clearInput]="true" placeholder="סיסמא"></ion-input>
+  <form class="login-container" [formGroup]="form" (ngSubmit)="signup()">
+    <ion-input [clearInput]="true" inputmode="email" placeholder="אימייל" formControlName="email"></ion-input>
+    <ion-input [clearInput]="true" placeholder="שם מלא" formControlName="name"></ion-input>
+    <ion-input [clearInput]="true" placeholder="סיסמא" formControlName="password"></ion-input>
 
     <div class="login-container__login">
       <h5>
@@ -10,5 +10,5 @@
       </h5>
       <ion-button color="secondary" fill="outline" routerDirection="root" routerLink="../login">לכניסה</ion-button>
     </div>
-  </div>
+  </form>
 </ion-content>
