@@ -4,8 +4,10 @@ import {Observable, of} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import UserCredential = firebase.auth.UserCredential;
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
 import {Customer} from '../../models';
+import {UserService} from '../../shared/services/user.service';
+import {firestore} from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +16,7 @@ export class AuthenticationService {
 
   private userProfilesCollection = this.db.collection('user-profiles');
 
-  constructor(private fbAuth: AngularFireAuth, private db: AngularFirestore) {
+  constructor(private fbAuth: AngularFireAuth, private db: AngularFirestore, private userService: UserService) {
   }
 
   signup({name, email, password}): Observable<Customer> {
@@ -28,7 +30,23 @@ export class AuthenticationService {
               name,
               email,
               id: ''
-            } as Customer))
+            } as Customer)),
+            tap((customer) => {
+              this.userService.setUser(customer);
+            })
+        );
+  }
+
+  login({email, password}): Observable<Customer> {
+    return fromPromise(this.fbAuth.auth.signInWithEmailAndPassword(email, password))
+        .pipe(
+            switchMap((user: UserCredential) => {
+              const id = user.user.uid;
+              return this.userProfilesCollection.doc<Customer>(id).valueChanges();
+            }),
+            tap((customer) => {
+              this.userService.setUser(customer);
+            })
         );
   }
 }

@@ -2,16 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ClientRoutingModule } from './client-routing.module';
-import {LoginComponent} from '../auth/login/login.component';
 import {IonicModule} from '@ionic/angular';
+import {ReactiveFormsModule} from '@angular/forms';
+import {HomeComponent} from './home/home.component';
 
 
 @NgModule({
-  declarations: [LoginComponent],
+  declarations: [HomeComponent],
   imports: [
     CommonModule,
     ClientRoutingModule,
-    IonicModule
+    IonicModule,
+    ReactiveFormsModule
   ]
 })
 export class ClientModule { }

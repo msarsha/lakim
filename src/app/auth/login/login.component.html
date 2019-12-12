@@ -1,13 +1,16 @@
 <ion-content color="primary">
-	<div class="login-container">
-		<ion-input [clearInput]="true" autocomplete="off" inputmode="email" placeholder="אימייל"></ion-input>
-		<ion-input [clearInput]="true" autocomplete="off" type="password" placeholder="סיסמא"></ion-input>
+	<form class="login-container" (ngSubmit)="login()" [formGroup]="form">
+		<ion-input formControlName="email" [clearInput]="true" autocomplete="off" inputmode="email"
+							 placeholder="אימייל"></ion-input>
+		<ion-input formControlName="password" [clearInput]="true" autocomplete="off" type="password"
+							 placeholder="סיסמא"></ion-input>
 
+		<ion-button color="secondary" type="submit">הירשם</ion-button>
 		<div class="login-container__signup">
 			<h5>
 				אין לי חשבון
 			</h5>
 			<ion-button color="secondary" fill="outline" routerDirection="root" routerLink="../signup">להרשמה</ion-button>
 		</div>
-	</div>
+	</form>
 </ion-content>
