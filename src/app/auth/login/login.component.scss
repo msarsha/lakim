@@ -8,10 +8,11 @@
 
 	ion-input {
 		flex: 0;
-		background: #ef44ff91;
 		margin-top: 5px;
 		margin-bottom: 5px;
 		text-align: center;
+		--background: #ef44ff91;
+		--placeholder-color: #fff;
 	}
 
 	&__signup {
