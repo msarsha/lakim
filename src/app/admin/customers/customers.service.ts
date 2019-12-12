@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
-import {Costumer} from '../../models';
+import {Customer} from '../../models';
 import {map} from 'rxjs/operators';
 
 @Injectable({
@@ -8,7 +8,7 @@ import {map} from 'rxjs/operators';
 })
 export class CustomersService {
 
-  private costumers$ = this.db.collection<Costumer>('costumer-profiles').valueChanges();
+  private costumers$ = this.db.collection<Customer>('user-profiles').valueChanges();
 
   approved$ = this.costumers$.pipe(
       map((costumers) => costumers.filter(costumer => costumer.approved))

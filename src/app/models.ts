@@ -8,7 +8,7 @@ export interface WorkingHours {
   to?: HoursMinutesPair | string;
 }
 
-export interface Costumer {
+export interface Customer {
   name: string;
   id?: string;
   email: string;
