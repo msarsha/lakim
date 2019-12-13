@@ -14,6 +14,7 @@ export interface Customer {
   email: string;
   phone: string;
   approved?: boolean;
+  isAdmin?: boolean;
 }
 
 export interface Settings {

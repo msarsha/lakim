@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {Customer} from '../../models';
-import {map} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {Observable} from 'rxjs';
 
@@ -11,7 +11,8 @@ import {Observable} from 'rxjs';
 export class CustomersService {
 
   private customersCollection = this.db.collection<Customer>('user-profiles');
-  private customers$ = this.customersCollection.valueChanges();
+  private customers$ = this.customersCollection.valueChanges()
+      .pipe(map(customers => customers.filter(c => !c.isAdmin)));
 
   approved$ = this.customers$.pipe(
       map((costumers) => costumers.filter(costumer => costumer.approved))

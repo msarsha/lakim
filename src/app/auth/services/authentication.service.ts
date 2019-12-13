@@ -41,7 +41,7 @@ export class AuthenticationService {
         .pipe(
             switchMap((user: UserCredential) => {
               const id = user.user.uid;
-              return this.userProfilesCollection.doc<Customer>(id).valueChanges().pipe(take(1));
+              return this.userProfilesCollection.doc<Customer>(id).valueChanges();
             }),
             tap((customer) => {
               this.userService.setUser(customer);
