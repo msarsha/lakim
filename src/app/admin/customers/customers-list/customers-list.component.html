@@ -3,23 +3,43 @@
 		ממתינים לאישור
 	</ion-list-header>
 
-	<app-costumers-list-item
-					*ngFor="let costumer of waitingApproval$ | async"
-					[costumer]="costumer">
-		<ion-item-options side="end">
-			<ion-item-option color="success">אשר</ion-item-option>
-		</ion-item-options>
-	</app-costumers-list-item>
+	<ng-container *ngIf="waitingApproval$ | async as customersWaitingForApproval">
+		<ng-container *ngIf="customersWaitingForApproval.length; else noWaitingCustomers">
+			<app-costumers-list-item
+							*ngFor="let customer of customersWaitingForApproval"
+							[costumer]="customer">
+				<ion-item-options side="end">
+					<ion-item-option color="success" (click)="approveCustomer(customer, true)">אשר</ion-item-option>
+				</ion-item-options>
+			</app-costumers-list-item>
+		</ng-container>
+		<ng-template #noWaitingCustomers>
+			<ion-label class="ion-padding">
+				<h3>אין לקוחות לאישור</h3>
+			</ion-label>
+		</ng-template>
+	</ng-container>
 
 	<ion-list-header color="primary">
 		מאושרים
 	</ion-list-header>
 
-	<app-costumers-list-item
-					*ngFor="let costumer of approved$ | async"
-					[costumer]="costumer">
-		<ion-item-options side="end">
-			<ion-item-option color="danger">בטל אישור</ion-item-option>
-		</ion-item-options>
-	</app-costumers-list-item>
+	<ng-container *ngIf="approved$ | async as approvedCustomers">
+		<ng-container *ngIf="approvedCustomers.length; else noApprovedCustomers">
+			<app-costumers-list-item
+							*ngFor="let customer of approvedCustomers"
+							[costumer]="customer">
+				<ion-item-options side="end">
+					<ion-item-option color="danger" (click)="approveCustomer(customer, false)">בטל אישור</ion-item-option>
+				</ion-item-options>
+			</app-costumers-list-item>
+		</ng-container>
+
+		<ng-template #noApprovedCustomers>
+			<ion-label class="ion-padding">
+				<h3>אין לקוחות מאושרים</h3>
+			</ion-label>
+		</ng-template>
+	</ng-container>
+
 </ion-list>
