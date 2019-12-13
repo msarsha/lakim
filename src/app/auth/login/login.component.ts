@@ -33,7 +33,17 @@ export class LoginComponent implements OnInit {
             if (user.approved) {
               this.router.navigate(['client']);
             } else {
-              const toast = await this.toastController.create({message: 'אינך מאושר - פנה לבעל העסק'});
+              const toast = await this.toastController.create({
+                message: 'אינך מאושר - פנה לבעל העסק',
+                duration: 3000,
+                buttons: [
+                  {
+                    role: 'cancel',
+                    text: 'טוב'
+                  }
+                ]
+
+              });
               toast.present();
             }
           });
