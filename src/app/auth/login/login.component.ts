@@ -32,10 +32,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.auth.login(this.form.value)
           .pipe(untilDestroyed(this))
           .subscribe(async (user: Customer) => {
+            const navigationExtras = {skipLocationChange: true};
+
             if (user.isAdmin) {
-              this.router.navigate(['admin']);
+              this.router.navigate(['admin'], navigationExtras);
             } else if (user.approved) {
-              this.router.navigate(['client']);
+              this.router.navigate(['client'], navigationExtras);
             } else {
               const toast = await this.toastController.create({
                 message: 'אינך מאושר - פנה לבעל העסק',

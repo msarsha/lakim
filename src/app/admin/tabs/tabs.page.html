@@ -1,18 +1,19 @@
 <ion-tabs>
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="calendar">
-      <ion-icon name="calendar"></ion-icon>
-      <ion-label>יומן</ion-label>
-    </ion-tab-button>
+	<ion-tab-bar slot="bottom">
+		<ion-tab-button tab="calendar">
+			<ion-icon name="calendar"></ion-icon>
+			<ion-label>יומן</ion-label>
+		</ion-tab-button>
 
-    <ion-tab-button tab="schedule">
-      <ion-icon name="clock"></ion-icon>
-      <ion-label>סידור עבודה</ion-label>
-    </ion-tab-button>
+		<ion-tab-button tab="schedule">
+			<ion-icon name="clock"></ion-icon>
+			<ion-label>סידור עבודה</ion-label>
+		</ion-tab-button>
 
-    <ion-tab-button tab="customers">
-      <ion-icon name="people"></ion-icon>
-      <ion-label>לקוחות</ion-label>
-    </ion-tab-button>
-  </ion-tab-bar>
+		<ion-tab-button tab="customers">
+			<ion-icon name="people"></ion-icon>
+			<ion-label>לקוחות</ion-label>
+			<ion-badge *ngIf="(numberOfWaitingApproval$ | async) as waitingForApproval">{{waitingForApproval}}</ion-badge>
+		</ion-tab-button>
+	</ion-tab-bar>
 </ion-tabs>

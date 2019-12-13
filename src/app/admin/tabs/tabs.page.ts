@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
+import {CustomersService} from '../customers/customers.service';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-tabs',
@@ -7,6 +9,10 @@ import { Component } from '@angular/core';
 })
 export class TabsPage {
 
-  constructor() {}
+  numberOfWaitingApproval$ = this.customersService.waitingApproval$
+      .pipe(map(customers => customers.length));
+
+  constructor(private customersService: CustomersService) {
+  }
 
 }
