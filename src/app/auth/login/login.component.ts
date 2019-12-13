@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from '@angular/forms';
 import {AuthenticationService} from '../services/authentication.service';
 import {Router} from '@angular/router';
 import {Customer} from '../../models';
 import {ToastController} from '@ionic/angular';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   form = this.fb.group({
     email: ['', Validators.required],
@@ -29,6 +30,7 @@ export class LoginComponent implements OnInit {
   login() {
     if (this.form.valid) {
       this.auth.login(this.form.value)
+          .pipe(untilDestroyed(this))
           .subscribe(async (user: Customer) => {
             if (user.approved) {
               this.router.navigate(['client']);
@@ -48,5 +50,8 @@ export class LoginComponent implements OnInit {
             }
           });
     }
+  }
+
+  ngOnDestroy(): void {
   }
 }
