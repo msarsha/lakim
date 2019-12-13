@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
 import {Observable} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, switchMap, take, tap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import UserCredential = firebase.auth.UserCredential;
 import {AngularFirestore} from '@angular/fire/firestore';
@@ -41,7 +41,7 @@ export class AuthenticationService {
         .pipe(
             switchMap((user: UserCredential) => {
               const id = user.user.uid;
-              return this.userProfilesCollection.doc<Customer>(id).valueChanges();
+              return this.userProfilesCollection.doc<Customer>(id).valueChanges().pipe(take(1));
             }),
             tap((customer) => {
               this.userService.setUser(customer);

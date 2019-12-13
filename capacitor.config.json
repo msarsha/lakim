@@ -1,0 +1,8 @@
+{
+  "appId": "com.lakim.sarsha",
+  "appName": "lakim",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "cordova": {}
+}
