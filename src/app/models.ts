@@ -10,8 +10,9 @@ export interface WorkingHours {
 
 export interface Customer {
   name: string;
-  id?: string;
+  id: string;
   email: string;
+  phone: string;
   approved?: boolean;
 }
 

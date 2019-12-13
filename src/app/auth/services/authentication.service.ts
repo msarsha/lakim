@@ -1,13 +1,12 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {Observable, of} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import UserCredential = firebase.auth.UserCredential;
-import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {Customer} from '../../models';
 import {UserService} from '../../shared/services/user.service';
-import {firestore} from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +18,12 @@ export class AuthenticationService {
   constructor(private fbAuth: AngularFireAuth, private db: AngularFirestore, private userService: UserService) {
   }
 
-  signup({name, email, password}): Observable<Customer> {
+  signup({name, email, password, phone}): Observable<Customer> {
     return fromPromise(this.fbAuth.auth.createUserWithEmailAndPassword(email, password))
         .pipe(
             switchMap((user: UserCredential) => {
               const id = user.user.uid;
-              return fromPromise(this.userProfilesCollection.doc(id).set({name, email, id}));
+              return fromPromise(this.userProfilesCollection.doc(id).set({name, email, id, phone}));
             }),
             map(() => ({
               name,
