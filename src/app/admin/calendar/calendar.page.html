@@ -1,6 +1,5 @@
 <app-lakim-header title="יומן"></app-lakim-header>
 
-
 <ion-content>
 	<div class="header-container">
 		<ion-button (click)="setToday()" size="small" fill="clear">היום</ion-button>
@@ -17,7 +16,8 @@
 						(onEventSelected)="onEventSelected($event)"
 						(onTitleChanged)="onTitleChanged($event)"
 						locale="he"
-						dir="rtl">
+						dir="rtl"
+	>
 	</calendar>
 
 </ion-content>
