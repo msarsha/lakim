@@ -11,11 +11,12 @@ import {AppComponent} from './app.component';
 import {AngularFireModule} from '@angular/fire';
 import {environment} from '../environments/environment';
 import {AngularFirestoreModule} from '@angular/fire/firestore';
-import {SharedModule} from './shared/shared.module';
 
-import { registerLocaleData } from '@angular/common';
+import {registerLocaleData} from '@angular/common';
 import heLocale from '@angular/common/locales/he';
-import { AngularFireAuthModule } from '@angular/fire/auth';
+import {AngularFireAuthModule} from '@angular/fire/auth';
+import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard';
+
 registerLocaleData(heLocale);
 
 @NgModule({
@@ -28,7 +29,7 @@ registerLocaleData(heLocale);
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    SharedModule
+    AngularFireAuthGuardModule
   ],
   providers: [
     StatusBar,

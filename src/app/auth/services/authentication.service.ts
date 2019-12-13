@@ -48,4 +48,13 @@ export class AuthenticationService {
             })
         );
   }
+
+  logout(): Observable<any> {
+    return fromPromise(this.fbAuth.auth.signOut())
+        .pipe(
+            tap(() => {
+              this.userService.setUser(null);
+            })
+        );
+  }
 }

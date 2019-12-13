@@ -7,6 +7,7 @@ import {CustomersPage} from './customers.page';
 import {CustomersListComponent} from './customers-list/customers-list.component';
 import {CustomersListItemComponent} from './customers-list-item/customers-list-item.component';
 import {AngularFireModule} from '@angular/fire';
+import {SharedModule} from '../../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import {AngularFireModule} from '@angular/fire';
     CommonModule,
     FormsModule,
     RouterModule.forChild([{path: '', component: CustomersPage}]),
-    AngularFireModule
+    AngularFireModule,
+    SharedModule
   ],
   declarations: [CustomersPage, CustomersListComponent, CustomersListItemComponent]
 })

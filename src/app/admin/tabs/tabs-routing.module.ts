@@ -1,11 +1,13 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { TabsPage } from './tabs.page';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {TabsPage} from './tabs.page';
+import {AngularFireAuthGuard} from '@angular/fire/auth-guard';
 
 const routes: Routes = [
   {
     path: '',
     component: TabsPage,
+    canActivate: [AngularFireAuthGuard],
     children: [
       {
         path: 'calendar',
@@ -13,7 +15,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../calendar/calendar.module').then(m => m.CalendarModule)
+                import('../calendar/calendar.module').then(m => m.CalendarModule)
           }
         ]
       },
@@ -23,7 +25,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../schedule/schedule.module').then(m => m.ScheduleModule)
+                import('../schedule/schedule.module').then(m => m.ScheduleModule)
           }
         ]
       },
@@ -33,7 +35,7 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('../customers/customers.module').then(m => m.CustomersModule)
+                import('../customers/customers.module').then(m => m.CustomersModule)
           }
         ]
       },
@@ -55,4 +57,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TabsPageRoutingModule {}
+export class TabsPageRoutingModule {
+}

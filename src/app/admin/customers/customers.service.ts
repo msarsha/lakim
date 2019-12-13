@@ -11,13 +11,13 @@ import {Observable} from 'rxjs';
 export class CustomersService {
 
   private customersCollection = this.db.collection<Customer>('user-profiles');
-  private costumers$ = this.customersCollection.valueChanges();
+  private customers$ = this.customersCollection.valueChanges();
 
-  approved$ = this.costumers$.pipe(
+  approved$ = this.customers$.pipe(
       map((costumers) => costumers.filter(costumer => costumer.approved))
   );
 
-  waitingApproval$ = this.costumers$.pipe(
+  waitingApproval$ = this.customers$.pipe(
       map((costumers) => costumers.filter(costumer => !costumer.approved))
   );
 
