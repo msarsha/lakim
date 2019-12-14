@@ -1,22 +1,33 @@
 import {Injectable} from '@angular/core';
 import {format, addMinutes} from 'date-fns';
 import {Observable, of} from 'rxjs';
-import {HoursMinutesPair} from '../../models';
+import {HoursMinutesPair, Settings} from '../../models';
+import {SettingsService} from './settings.service';
+import {switchMap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScheduleService {
 
-  constructor() {
+  constructor(private settingsService: SettingsService) {
   }
 
-  getAvailableAppointments(interval: number): Observable<HoursMinutesPair[]> {
-    const availableHours = this.buildWorkingHours(interval);
-    return of(availableHours);
+  getAvailableSlots(interval: number): Observable<any> {
+    return this.settingsService.settings$
+        .pipe(
+            switchMap((settings: Settings) => {
+              return this
+                  .buildWorkingHours(interval,
+                      settings.workingHours.from as HoursMinutesPair,
+                      settings.workingHours.to as HoursMinutesPair);
+            })
+        );
+
+    return of([]);
   }
 
-  private buildWorkingHours(interval: number): HoursMinutesPair[] {
+  private buildWorkingHours(interval: number, from: HoursMinutesPair, to: HoursMinutesPair): HoursMinutesPair[] {
     const workingHours = [];
     const dateAtMidnight = new Date().setHours(0, 0, 0, 0);
 

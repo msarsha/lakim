@@ -10,7 +10,7 @@
 	<ion-list>
 		<ion-item *ngFor="let appointment of appointments$ | async">
       <ion-label>
-        {{appointment | date}}
+        {{appointment.date | date}}
       </ion-label>
     </ion-item>
 	</ion-list>

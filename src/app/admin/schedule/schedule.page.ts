@@ -62,5 +62,5 @@ export class SchedulePage {
 
 // availableHoursAndMinutes$: Observable<HoursMinutesPair[]> = this.workingDays$
 //     .pipe(
-//         switchMap((settings) => this.scheduleService.getAvailableAppointments(settings.appointmentTime))
+//         switchMap((settings) => this.scheduleService.getAvailableSlots(settings.appointmentTime))
 //     );
