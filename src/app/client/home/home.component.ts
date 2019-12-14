@@ -8,6 +8,8 @@ import {AppointmentService} from '../../shared/services/appointment.service';
 })
 export class HomeComponent implements OnInit {
 
+  appointments$ = this.appointmentService.appointments$;
+
   constructor(private appointmentService: AppointmentService) {
   }
 
