@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
+import {AppointmentService} from '../../shared/services/appointment.service';
 
 @Component({
   selector: 'app-home',
@@ -8,13 +8,13 @@ import {Router} from '@angular/router';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private router: Router) {
+  constructor(private appointmentService: AppointmentService) {
   }
 
   ngOnInit() {
   }
 
-  navigateToAdmin() {
-    this.router.navigate(['admin']);
+  createAppointment() {
+    this.appointmentService.create(new Date());
   }
 }

@@ -16,4 +16,8 @@ export class UserService {
   setUser(user: Customer) {
     this.currentUserBS.next(user);
   }
+
+  getUser(): Customer {
+    return this.currentUserBS.getValue();
+  }
 }
