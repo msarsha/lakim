@@ -4,6 +4,7 @@ import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {HoursMinutesPair, Settings, WorkingHours} from '../../models';
 import {map, take, tap} from 'rxjs/operators';
 import {formatISO, getHours, getMinutes, setHours, setMinutes} from 'date-fns';
+import {fromPromise} from 'rxjs/internal-compatibility';
 
 export const weekDays = [
   'ראשון',
@@ -58,6 +59,13 @@ export class SettingsService {
       })).subscribe();
 
   constructor(private db: AngularFirestore) {
+  }
+
+  getWorkingHours(): Observable<any> {
+    return this.settingsDocument.get()
+        .pipe(
+            map(ref => ref.data())
+        );
   }
 
   setAppointmentTime(time: number) {

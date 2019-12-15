@@ -43,7 +43,11 @@ export class AppointmentService {
     }));
   }
 
-  getAvailableAppointments(): Observable<any> {
-    return this.scheduleService.getAvailableSlots(45);
+  getAvailableAppointments(month: number): Observable<any> {
+    return this.scheduleService.getAvailableHours()
+        .pipe(map((availableHours) => ({
+          availableHours,
+          daysInMonth: this.scheduleService.getDatesForMonth(month)
+        })));
   }
 }
