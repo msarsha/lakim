@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {format, addMinutes, eachDayOfInterval, startOfMonth, lastDayOfMonth, setMonth} from 'date-fns';
+import {format, addMinutes, eachDayOfInterval, startOfMonth, lastDayOfMonth, setMonth, addDays} from 'date-fns';
 import {Observable, of} from 'rxjs';
 import {HoursMinutesPair, Settings} from '../../models';
 import {SettingsService} from './settings.service';
@@ -27,8 +27,8 @@ export class ScheduleService {
   getDatesForMonth(month: number): Date[] {
     const today = setMonth(new Date(), month);
     return eachDayOfInterval({
-      start: startOfMonth(today),
-      end: lastDayOfMonth(today)
+      start: today,
+      end: addDays(today, 60)
     });
   }
 

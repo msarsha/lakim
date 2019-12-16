@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
   }
 
   async createAppointment() {
-    // this.appointmentService.create(new Date());
+    // this.appointmentService.scheduleAppointment(new Date());
     const modal = await this.modalCtrl.create({
       component: SelectAppointmentModalComponent
     });

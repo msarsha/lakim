@@ -20,7 +20,7 @@ describe('TabsPage', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should scheduleAppointment', () => {
     expect(component).toBeTruthy();
   });
 });

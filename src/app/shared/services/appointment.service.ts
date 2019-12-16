@@ -35,7 +35,7 @@ export class AppointmentService {
               private scheduleService: ScheduleService) {
   }
 
-  create(date: Date): Observable<any> {
+  scheduleAppointment(date: Date): Observable<any> {
     const user = this.userService.getUser();
     return fromPromise(this.appointmentsCollection.add({
       uid: user.id,
