@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ModalController} from '@ionic/angular';
 import {AppointmentService} from '../../shared/services/appointment.service';
-import {tap} from 'rxjs/operators';
 import {FormBuilder} from '@angular/forms';
-import {setHours, setMinutes} from 'date-fns';
+import {set} from 'date-fns';
 import {HoursMinutesPair} from '../../models';
 
 @Component({
@@ -42,8 +41,11 @@ export class SelectAppointmentModalComponent implements OnInit {
   }
 
   schedule() {
-    const {day, time}: { day: Date, time: HoursMinutesPair } = this.form.value;
-    const appointmentDate = setMinutes(setHours(day, Number(time.hours)), Number(time.minutes));
-    this.appointmentService.scheduleAppointment(appointmentDate);
+    const {day, time: {hours, minutes}}: { day: Date, time: HoursMinutesPair } = this.form.value;
+    const appointmentDate = set(day, {hours, minutes});
+    this.appointmentService.scheduleAppointment(appointmentDate)
+        .subscribe(() => {
+          this.close();
+        });
   }
 }

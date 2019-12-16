@@ -10,7 +10,7 @@ import {SelectAppointmentModalComponent} from '../select-appointment-modal/selec
 })
 export class HomeComponent implements OnInit {
 
-  appointments$ = this.appointmentService.appointments$;
+  appointments$ = this.appointmentService.appointmentsForUser$;
 
   constructor(private appointmentService: AppointmentService,
               private modalCtrl: ModalController) {
