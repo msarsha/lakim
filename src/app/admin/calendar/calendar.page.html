@@ -2,19 +2,19 @@
 
 <ion-content>
 	<div class="header-container">
-		<ion-button (click)="setToday()" size="small" fill="clear">היום</ion-button>
+		<ion-button (click)="resetToday()" size="small" fill="clear">היום</ion-button>
 		<ion-label class="month-title ion-padding">
 			<h2>
 				{{title}}
 			</h2>
 		</ion-label>
 	</div>
-	<calendar [eventSource]="eventSource"
+	<calendar [eventSource]="eventSource$ | async"
 						[currentDate]="today"
 						[calendarMode]="'month'"
-						(onTimeSelected)="onTimeChanged($event)"
 						(onEventSelected)="onEventSelected($event)"
 						(onTitleChanged)="onTitleChanged($event)"
+						(onCurrentDateChanged)="onCurrentDateChanged($event)"
 						locale="he"
 						dir="rtl"
 	>

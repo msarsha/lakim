@@ -1,6 +1,9 @@
 import {Component} from '@angular/core';
-import {addMinutes} from 'date-fns';
+import {addMinutes, set} from 'date-fns';
 import {IEvent} from 'ionic2-calendar/calendar';
+import {AppointmentService} from '../../shared/services/appointment.service';
+import {Subject} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-tab1',
@@ -8,32 +11,43 @@ import {IEvent} from 'ionic2-calendar/calendar';
   styleUrls: ['calendar.page.scss']
 })
 export class CalendarPage {
-  eventSource = [{
-    title: 'יעל אוחנה',
-    startTime: new Date(),
-    endTime: addMinutes(new Date(), 45),
-    id: 'test'
-  }];
-
   today = new Date();
+  selectedDate = new Date();
   title: string;
+  dateChangedBS = new Subject<Date>();
 
-  constructor() {
+  eventSource$ = this.dateChangedBS
+      .pipe(
+          switchMap((date: Date) => {
+            return this.appointmentService.getAppointmentsFrom(date);
+          }),
+          map((appointments) =>
+              appointments.map(appointment => ({
+                title: ` תור${appointment.date}`,
+                startTime: new Date(appointment.date),
+                endTime: addMinutes(new Date(appointment.date), appointment.length || 30),
+                id: new Date(appointment.date).getTime().toString()
+              })))
+      );
+
+  constructor(private appointmentService: AppointmentService) {
+    this.eventSource$.subscribe();
   }
 
-  onTimeChanged($event) {
-    console.log($event);
-  }
 
   onEventSelected($event: IEvent) {
-    console.log($event);
   }
 
   onTitleChanged($event: string) {
     this.title = $event;
+    this.dateChangedBS.next(this.selectedDate);
   }
 
-  setToday() {
+  resetToday() {
     this.today = new Date();
+  }
+
+  onCurrentDateChanged($event: Date) {
+    this.selectedDate = $event;
   }
 }

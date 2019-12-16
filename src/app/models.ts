@@ -22,3 +22,9 @@ export interface Settings {
   workingHours: WorkingHours;
   workingDays: number[];
 }
+
+export interface Appointment {
+  length: number;
+  uid: string;
+  date: Date;
+}

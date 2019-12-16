@@ -6,7 +6,8 @@ import {map, switchMap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {ScheduleService} from './schedule.service';
 import {SettingsService} from './settings.service';
-import {Settings} from '../../models';
+import {Appointment, Settings} from '../../models';
+import {lastDayOfMonth, set, startOfMonth} from 'date-fns';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,17 @@ export class AppointmentService {
           }));
         }));
 
+  }
+
+  getAppointmentsFrom(date: Date): Observable<Appointment[]> {
+    const firstDayOfMonthEpoch = startOfMonth(date).getTime();
+    const lastDayOfMonthEpoch = lastDayOfMonth(date).getTime();
+    return this.db
+        .collection<Appointment>('appointments',
+            ref => ref
+                .where('date', '>=', firstDayOfMonthEpoch)
+                .where('date', '<=', lastDayOfMonthEpoch))
+        .valueChanges();
   }
 
   getAvailableAppointments(month: number): Observable<any> {
