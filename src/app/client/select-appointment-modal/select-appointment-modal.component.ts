@@ -27,4 +27,8 @@ export class SelectAppointmentModalComponent implements OnInit {
   onDayChanged($event: CustomEvent) {
     console.log($event);
   }
+
+  onHourChanged($event: CustomEvent) {
+    console.log($event);
+  }
 }
