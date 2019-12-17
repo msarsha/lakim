@@ -19,7 +19,7 @@ export class CalendarPage {
   eventSource$ = this.dateChangedBS
       .pipe(
           switchMap((date: Date) => {
-            return this.appointmentService.getAppointmentsFrom(date);
+            return this.appointmentService.getAppointmentsForMonth(date);
           }),
           map((appointments) =>
               appointments.map(appointment => ({

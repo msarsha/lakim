@@ -8,6 +8,7 @@ import {ScheduleService} from './schedule.service';
 import {SettingsService} from './settings.service';
 import {Appointment, Settings} from '../../models';
 import {lastDayOfMonth, set, startOfMonth} from 'date-fns';
+import {CustomersService} from '../../admin/customers/customers.service';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,8 @@ export class AppointmentService {
   constructor(private db: AngularFirestore,
               private userService: UserService,
               private scheduleService: ScheduleService,
-              private settingsService: SettingsService) {
+              private settingsService: SettingsService,
+              private customersService: CustomersService) {
   }
 
   scheduleAppointment(date: Date): Observable<any> {
@@ -53,9 +55,10 @@ export class AppointmentService {
 
   }
 
-  getAppointmentsFrom(date: Date): Observable<Appointment[]> {
+  getAppointmentsForMonth(date: Date): Observable<Appointment[]> {
     const firstDayOfMonthEpoch = startOfMonth(date).getTime();
     const lastDayOfMonthEpoch = lastDayOfMonth(date).getTime();
+    this.customersService.approved$.subscribe(console.log);
     return this.db
         .collection<Appointment>('appointments',
             ref => ref
