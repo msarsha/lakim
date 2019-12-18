@@ -10,9 +10,9 @@ import {BehaviorSubject, Observable} from 'rxjs';
 })
 export class CustomersService {
     private customersBS = new BehaviorSubject([]);
+    private customers$ = this.customersBS.asObservable();
 
     private customersCollection = this.db.collection<Customer>('user-profiles');
-    private customers$ = this.customersBS.asObservable();
 
     approved$ = this.customers$.pipe(
         map((costumers) => costumers.filter(costumer => costumer.approved))

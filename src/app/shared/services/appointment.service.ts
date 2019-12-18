@@ -58,7 +58,7 @@ export class AppointmentService {
   getAppointmentsForMonth(date: Date): Observable<Appointment[]> {
     const firstDayOfMonthEpoch = startOfMonth(date).getTime();
     const lastDayOfMonthEpoch = lastDayOfMonth(date).getTime();
-    this.customersService.approved$.subscribe(console.log);
+    this.customersService.approved$.subscribe();
     return this.db
         .collection<Appointment>('appointments',
             ref => ref
