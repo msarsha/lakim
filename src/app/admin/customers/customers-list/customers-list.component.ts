@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {CustomersService} from '../customers.service';
 import {Customer} from '../../../models';
+import {Platform} from '@ionic/angular';
 
 @Component({
   selector: 'app-costumers-list',
@@ -8,6 +9,8 @@ import {Customer} from '../../../models';
   styleUrls: ['./customers-list.component.scss'],
 })
 export class CustomersListComponent implements OnInit {
+  isIos = this.platform.is('ios') || this.platform.is('iphone');
+
   approved$ = this
       .costumersService
       .approved$;
@@ -16,7 +19,9 @@ export class CustomersListComponent implements OnInit {
       .costumersService
       .waitingApproval$;
 
-  constructor(private costumersService: CustomersService) {
+  constructor(private costumersService: CustomersService,
+              private platform: Platform) {
+    console.log(this.isIos);
   }
 
   ngOnInit() {

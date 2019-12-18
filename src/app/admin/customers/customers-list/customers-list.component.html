@@ -8,7 +8,7 @@
 			<app-costumers-list-item
 							*ngFor="let customer of customersWaitingForApproval"
 							[costumer]="customer">
-				<ion-item-options side="end">
+				<ion-item-options side="end" [dir]="isIos ? 'ltr' : 'rtl'">
 					<ion-item-option color="success" (click)="approveCustomer(customer, true)">אשר</ion-item-option>
 				</ion-item-options>
 			</app-costumers-list-item>
@@ -29,7 +29,7 @@
 			<app-costumers-list-item
 							*ngFor="let customer of approvedCustomers"
 							[costumer]="customer">
-				<ion-item-options side="end">
+				<ion-item-options side="end" [dir]="isIos ? 'ltr' : 'rtl'">
 					<ion-item-option color="danger" (click)="approveCustomer(customer, false)">בטל אישור</ion-item-option>
 				</ion-item-options>
 			</app-costumers-list-item>
