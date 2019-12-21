@@ -19,6 +19,7 @@ export class CalendarPage {
     }
 
     onEventSelected($event: IEvent) {
+        console.log($event);
     }
 
     onTitleChanged($event: string) {

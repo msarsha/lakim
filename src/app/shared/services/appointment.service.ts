@@ -43,11 +43,13 @@ export class AppointmentService {
   }
 
   scheduleAppointment(date: Date): Observable<any> {
-    const user = this.userService.getUser();
+    const {id, name, phone} = this.userService.getUser();
     return this.settingsService.getWorkingHours()
         .pipe(switchMap((settings: Settings) => {
           return fromPromise(this.appointmentsCollection.add({
-            uid: user.id,
+            uid: id,
+            phone,
+            name,
             length: settings.appointmentTime,
             date: date.getTime()
           }));
@@ -58,13 +60,22 @@ export class AppointmentService {
   getAppointmentsForMonth(date: Date): Observable<Appointment[]> {
     const firstDayOfMonthEpoch = startOfMonth(date).getTime();
     const lastDayOfMonthEpoch = lastDayOfMonth(date).getTime();
-    this.customersService.approved$.subscribe();
     return this.db
         .collection<Appointment>('appointments',
             ref => ref
                 .where('date', '>=', firstDayOfMonthEpoch)
                 .where('date', '<=', lastDayOfMonthEpoch))
-        .valueChanges();
+        .snapshotChanges()
+        .pipe(
+            map((snapshots) => {
+              return snapshots.map((snap) => {
+                return {
+                  id: snap.payload.doc.id,
+                  ...snap.payload.doc.data()
+                } as Appointment;
+              });
+            })
+        );
   }
 
   getAvailableAppointments(month: number): Observable<any> {

@@ -17,10 +17,10 @@ export class EventSourceService {
             }),
             map((appointments) =>
                 appointments.map(appointment => ({
-                    title: ` תור${appointment.date}`,
+                    title: `${appointment.name}`,
                     startTime: new Date(appointment.date),
                     endTime: addMinutes(new Date(appointment.date), appointment.length || 30),
-                    id: new Date(appointment.date).getTime().toString()
+                    id: appointment.id
                 })))
         );
 

@@ -24,7 +24,10 @@ export interface Settings {
 }
 
 export interface Appointment {
-  length: number;
-  uid: string;
-  date: Date;
+  id?: string;
+  length?: number;
+  date?: Date;
+  uid?: string;
+  name?: string;
+  phone?: string;
 }
