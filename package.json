@@ -10,7 +10,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "run:ios": "ionic capacitor run ios -l --address=0.0.0.0"
+    "run:ios": "ionic capacitor run ios -l --address=0.0.0.0",
+    "deploy": "ionic build && firebase deploy"
   },
   "private": true,
   "dependencies": {
