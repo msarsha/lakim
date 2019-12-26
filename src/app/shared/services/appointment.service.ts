@@ -15,7 +15,10 @@ import {CustomersService} from '../../admin/customers/customers.service';
 })
 export class AppointmentService {
 
-    private appointmentsCollection = this.db.collection('appointments');
+    private appointmentsCollection = this.db.collection('appointments',
+        ref => ref
+            .where('date', '>=', new Date().getTime()));
+
     appointments$ = this.appointmentsCollection.snapshotChanges();
 
     appointmentsForUser$: Observable<any> = combineLatest([
@@ -27,13 +30,10 @@ export class AppointmentService {
                 return [];
             }
 
-            const today = new Date().getTime();
             return appointments
                 .filter(appointmentSnapshot => {
                     const aid = appointmentSnapshot.payload.doc.id;
-                    const {date} = appointmentSnapshot.payload.doc.data() as any;
-
-                    return date >= today && !!user.appointments[aid];
+                    return !!user.appointments[aid];
                 })
                 .map(appointmentSnapshot => appointmentSnapshot.payload.doc.data());
         }));
