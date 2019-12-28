@@ -1,6 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from '../services/authentication.service';
 import {FormBuilder, Validators} from '@angular/forms';
+import {ToastTypes} from '../../shared/services/toast-types';
+import {ToastService} from '../../shared/services/toast.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -16,7 +19,10 @@ export class SignupComponent implements OnInit {
     password: ['', Validators.required]
   });
 
-  constructor(private auth: AuthenticationService, private fb: FormBuilder) {
+  constructor(private auth: AuthenticationService,
+              private fb: FormBuilder,
+              private toastService: ToastService,
+              private router: Router) {
   }
 
   ngOnInit() {
@@ -26,7 +32,10 @@ export class SignupComponent implements OnInit {
     if (this.form.valid) {
       this.auth
           .signup(this.form.value)
-          .subscribe(console.log);
+          .subscribe(async () => {
+            await this.toastService.open(ToastTypes.NOT_APPROVED);
+            this.router.navigate(['auth', 'login']);
+          });
     }
   }
 }

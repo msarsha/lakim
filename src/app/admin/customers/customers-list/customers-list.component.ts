@@ -21,7 +21,6 @@ export class CustomersListComponent implements OnInit {
 
   constructor(private costumersService: CustomersService,
               private platform: Platform) {
-    console.log(this.isIos);
   }
 
   ngOnInit() {

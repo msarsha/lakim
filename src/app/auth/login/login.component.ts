@@ -3,8 +3,9 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {AuthenticationService} from '../services/authentication.service';
 import {Router} from '@angular/router';
 import {Customer} from '../../models';
-import {ToastController} from '@ionic/angular';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {ToastService} from '../../shared/services/toast.service';
+import {ToastTypes} from '../../shared/services/toast-types';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder,
               private auth: AuthenticationService,
               private router: Router,
-              public toastController: ToastController) {
+              private toastService: ToastService) {
   }
 
   ngOnInit() {
@@ -37,18 +38,7 @@ export class LoginComponent implements OnInit, OnDestroy {
             } else if (user.approved) {
               this.router.navigate(['client']);
             } else {
-              const toast = await this.toastController.create({
-                message: 'אינך מאושר - פנה לבעל העסק',
-                duration: 3000,
-                buttons: [
-                  {
-                    role: 'cancel',
-                    text: 'טוב'
-                  }
-                ]
-
-              });
-              toast.present();
+              await this.toastService.open(ToastTypes.NOT_APPROVED);
             }
           });
     }
