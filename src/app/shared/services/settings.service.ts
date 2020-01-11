@@ -92,8 +92,8 @@ export class SettingsService {
     }
 
     private setHoursAndMinutes(today: Date, pair: HoursMinutesPair): string {
-        const withHours = setHours(today, pair.hours);
-        const withMinutes = setMinutes(withHours, pair.minutes);
+        const withHours = setHours(today, pair.hours as number);
+        const withMinutes = setMinutes(withHours, pair.minutes as number);
         return formatISO(withMinutes);
     }
 }
