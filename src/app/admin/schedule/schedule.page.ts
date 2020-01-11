@@ -58,9 +58,3 @@ export class SchedulePage {
     this.settingsService.setWorkingHours(value, 'to');
   }
 }
-
-
-// availableHoursAndMinutes$: Observable<HoursMinutesPair[]> = this.workingDays$
-//     .pipe(
-//         switchMap((settings) => this.scheduleService.getAvailableHours(settings.appointmentTime))
-//     );

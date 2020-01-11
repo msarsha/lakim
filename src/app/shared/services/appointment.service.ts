@@ -1,91 +1,134 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {UserService} from './user.service';
-import {combineLatest, Observable} from 'rxjs';
-import {map, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {ScheduleService} from './schedule.service';
 import {SettingsService} from './settings.service';
-import {Appointment, Settings} from '../../models';
-import {lastDayOfMonth, set, startOfMonth} from 'date-fns';
+import {Appointment, HoursMinutesPair, Settings} from '../../models';
+import {endOfDay, format, lastDayOfMonth, set, startOfDay, startOfMonth} from 'date-fns';
 import {CustomersService} from '../../admin/customers/customers.service';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class AppointmentService {
 
-    private appointmentsCollection = this.db.collection('appointments',
-        ref => ref
-            .where('date', '>=', new Date().getTime()));
+  private selectedDateForAvailableHoursBS = new Subject<Date>();
+  private appointmentsCollection = this.db.collection('appointments',
+      ref => ref
+          .where('date', '>=', new Date().getTime()));
 
-    appointments$ = this.appointmentsCollection.snapshotChanges();
+  appointments$ = this.appointmentsCollection.snapshotChanges();
 
-    appointmentsForUser$: Observable<any> = combineLatest([
-        this.appointments$,
-        this.userService.currentUser$
-    ])
-        .pipe(map(([appointments, user]) => {
-            if (!user || !user.appointments) {
-                return [];
-            }
+  availableHoursForDate$: Observable<HoursMinutesPair[]> = combineLatest([
+    this.selectedDateForAvailableHoursBS
+        .asObservable()
+        .pipe(
+            switchMap((date) => {
+              return this.getAppointmentsForDay(date);
+            }),
+            map((appointments: Appointment[]) => appointments.map((appointment) => {
+              const date = new Date(appointment.date);
+              const hours = format(date, 'HH');
+              const minutes = format(date, 'mm');
+              return {minutes, hours} as HoursMinutesPair;
+            }))
+        ),
+    this.scheduleService.getWorkingHours()
+  ])
+      .pipe(
+          map(([takenAppointments, availableHours]) => {
+            return availableHours.filter(
+                availablePair =>
+                    !takenAppointments.find(
+                        takenPair => availablePair.hours === takenPair.hours && availablePair.minutes === takenPair.minutes
+                    ));
+          })
+      );
 
-            return appointments
-                .filter(appointmentSnapshot => {
-                    const aid = appointmentSnapshot.payload.doc.id;
-                    return !!user.appointments[aid];
-                })
-                .map(appointmentSnapshot => appointmentSnapshot.payload.doc.data());
+  appointmentsForUser$: Observable<any> = combineLatest([
+    this.appointments$,
+    this.userService.currentUser$
+  ])
+      .pipe(map(([appointments, user]) => {
+        if (!user || !user.appointments) {
+          return [];
+        }
+
+        return appointments
+            .filter(appointmentSnapshot => {
+              const aid = appointmentSnapshot.payload.doc.id;
+              return !!user.appointments[aid];
+            })
+            .map(appointmentSnapshot => appointmentSnapshot.payload.doc.data());
+      }));
+
+  constructor(private db: AngularFirestore,
+              private userService: UserService,
+              private scheduleService: ScheduleService,
+              private settingsService: SettingsService,
+              private customersService: CustomersService) {
+  }
+
+  private getAppointmentsForDay(date: Date): Observable<Appointment[]> {
+    const startOfDate = startOfDay(date);
+    const endOfDate = endOfDay(date);
+
+    return this.getAppointmentsForRange(startOfDate, endOfDate);
+  }
+
+  scheduleAppointment(date: Date): Observable<any> {
+    const {id, name, phone} = this.userService.getUser();
+    return this.settingsService.getSettings()
+        .pipe(switchMap((settings: Settings) => {
+          return fromPromise(this.appointmentsCollection.add({
+            uid: id,
+            phone,
+            name,
+            length: settings.appointmentTime,
+            date: date.getTime()
+          }));
         }));
 
-    constructor(private db: AngularFirestore,
-                private userService: UserService,
-                private scheduleService: ScheduleService,
-                private settingsService: SettingsService,
-                private customersService: CustomersService) {
-    }
+  }
 
-    scheduleAppointment(date: Date): Observable<any> {
-        const {id, name, phone} = this.userService.getUser();
-        return this.settingsService.getWorkingHours()
-            .pipe(switchMap((settings: Settings) => {
-                return fromPromise(this.appointmentsCollection.add({
-                    uid: id,
-                    phone,
-                    name,
-                    length: settings.appointmentTime,
-                    date: date.getTime()
-                }));
-            }));
+  getAppointmentsForMonth(date: Date): Observable<Appointment[]> {
+    const firstDayOfMonthEpoch = startOfMonth(date);
+    const lastDayOfMonthEpoch = lastDayOfMonth(date);
 
-    }
+    return this.getAppointmentsForRange(firstDayOfMonthEpoch, lastDayOfMonthEpoch);
+  }
 
-    getAppointmentsForMonth(date: Date): Observable<Appointment[]> {
-        const firstDayOfMonthEpoch = startOfMonth(date).getTime();
-        const lastDayOfMonthEpoch = lastDayOfMonth(date).getTime();
-        return this.db
-            .collection<Appointment>('appointments',
-                ref => ref
-                    .where('date', '>=', firstDayOfMonthEpoch)
-                    .where('date', '<=', lastDayOfMonthEpoch))
-            .snapshotChanges()
-            .pipe(
-                map((snapshots) => {
-                    return snapshots.map((snap) => {
-                        return {
-                            id: snap.payload.doc.id,
-                            ...snap.payload.doc.data()
-                        } as Appointment;
-                    });
-                })
-            );
-    }
+  getAvailableAppointments(month: number): Observable<any> {
+    return this.scheduleService.getWorkingHours()
+        .pipe(map((availableHours) => ({
+          availableHours,
+          daysInMonth: this.scheduleService.getDatesForMonth(month)
+        })));
+  }
 
-    getAvailableAppointments(month: number): Observable<any> {
-        return this.scheduleService.getAvailableHours()
-            .pipe(map((availableHours) => ({
-                availableHours,
-                daysInMonth: this.scheduleService.getDatesForMonth(month)
-            })));
-    }
+  selectDateForAvailableHours(date: Date) {
+    this.selectedDateForAvailableHoursBS.next(date);
+  }
+
+  private getAppointmentsForRange(from: Date, to: Date): Observable<Appointment[]> {
+    return this.db
+        .collection<Appointment>('appointments',
+            ref => ref
+                .where('date', '>=', from.getTime())
+                .where('date', '<=', to.getTime()))
+        .snapshotChanges()
+        .pipe(
+            map((snapshots) => {
+              return snapshots.map((snap) => {
+                return {
+                  id: snap.payload.doc.id,
+                  ...snap.payload.doc.data()
+                } as Appointment;
+              });
+            })
+        );
+  }
 }

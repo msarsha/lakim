@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
-import {format, addMinutes, eachDayOfInterval, startOfMonth, lastDayOfMonth, setMonth, addDays} from 'date-fns';
-import {Observable, of} from 'rxjs';
+import {format, addMinutes, eachDayOfInterval, setMonth, addDays} from 'date-fns';
+import {Observable} from 'rxjs';
 import {HoursMinutesPair, Settings} from '../../models';
 import {SettingsService} from './settings.service';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +13,15 @@ export class ScheduleService {
   constructor(private settingsService: SettingsService) {
   }
 
-  getAvailableHours(): Observable<HoursMinutesPair[]> {
-    return this.settingsService.getWorkingHours()
+  getWorkingHours(): Observable<HoursMinutesPair[]> {
+    return this.settingsService.getSettings()
         .pipe(
             map((settings: Settings) => {
-              return this.buildWorkingHours(settings.appointmentTime,
+              return this.buildWorkingHours(
+                  settings.appointmentTime,
                   settings.workingHours.from as HoursMinutesPair,
-                  settings.workingHours.to as HoursMinutesPair);
+                  settings.workingHours.to as HoursMinutesPair
+              );
             })
         );
   }
@@ -67,6 +69,6 @@ export class ScheduleService {
   }
 
   private toMinutes(pair: HoursMinutesPair): number {
-    return (pair.hours * 60) + pair.minutes;
+    return (pair.hours as number * 60) + (pair.minutes as number);
   }
 }

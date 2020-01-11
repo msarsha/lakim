@@ -4,9 +4,7 @@ import {PreloadAllModules, RouterModule, Routes} from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/auth/login',
-    // redirectTo: '/client',
-    // redirectTo: '/admin/tabs/calendar',
+    redirectTo: '/client/home',
     pathMatch: 'full'
   },
   {

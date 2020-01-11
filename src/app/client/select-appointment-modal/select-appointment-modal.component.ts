@@ -4,6 +4,8 @@ import {AppointmentService} from '../../shared/services/appointment.service';
 import {FormBuilder} from '@angular/forms';
 import {set} from 'date-fns';
 import {HoursMinutesPair} from '../../models';
+import {ScheduleService} from '../../shared/services/schedule.service';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-appointment-modal',
@@ -11,16 +13,17 @@ import {HoursMinutesPair} from '../../models';
   styleUrls: ['./select-appointment-modal.component.scss'],
 })
 export class SelectAppointmentModalComponent implements OnInit {
-  availableAppointments$ = this.appointmentService
-      .getAvailableAppointments(new Date().getMonth());
+  availableDates = this.scheduleService.getDatesForMonth(new Date().getMonth());
+  availableHoursForDate$ = this.appointmentService.availableHoursForDate$.pipe(tap(console.log));
 
   form = this.fb.group({
     day: [''],
-    time: ['']
+    time: [{value: '', disabled: true}]
   });
 
   constructor(private modalCtrl: ModalController,
               private appointmentService: AppointmentService,
+              private scheduleService: ScheduleService,
               private fb: FormBuilder) {
   }
 
@@ -33,7 +36,8 @@ export class SelectAppointmentModalComponent implements OnInit {
   }
 
   onDayChanged($event: CustomEvent) {
-    console.log($event);
+    this.appointmentService.selectDateForAvailableHours($event.detail.value);
+    this.form.get('time').enable();
   }
 
   onHourChanged($event: CustomEvent) {
@@ -42,7 +46,7 @@ export class SelectAppointmentModalComponent implements OnInit {
 
   schedule() {
     const {day, time: {hours, minutes}}: { day: Date, time: HoursMinutesPair } = this.form.value;
-    const appointmentDate = set(day, {hours, minutes});
+    const appointmentDate = set(day, {hours: hours as number, minutes: minutes as number});
     this.appointmentService.scheduleAppointment(appointmentDate)
         .subscribe(() => {
           this.close();

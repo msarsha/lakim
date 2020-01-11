@@ -67,7 +67,7 @@ export class SettingsService {
             ).subscribe();
     }
 
-    getWorkingHours(): Observable<any> {
+    getSettings(): Observable<any> {
         return this.settingsDocument.get()
             .pipe(
                 map(ref => ref.data())

@@ -11,43 +11,42 @@
 	</ion-toolbar>
 </ion-header>
 <ion-content>
-	<ng-container *ngIf="availableAppointments$ | async as appointments">
-		<ion-list [formGroup]="form">
-			<ion-item>
-				<ion-label>יום</ion-label>
-				<ion-select (ionChange)="onDayChanged($event)"
-										cancelText="בטל"
-										okText="בחר"
-										placeholder="בחר יום"
-                    formControlName="day"
+	<ion-list [formGroup]="form">
+		<ion-item>
+			<ion-label>יום</ion-label>
+			<ion-select (ionChange)="onDayChanged($event)"
+									cancelText="בטל"
+									okText="בחר"
+									placeholder="בחר יום"
+									formControlName="day"
+									#daySelect
+			>
+				<ion-select-option
+								*ngFor="let day of availableDates"
+								[value]="day"
 				>
-					<ion-select-option
-									*ngFor="let day of appointments.daysInMonth"
-									[value]="day"
-					>
-						{{day | date:'EEE dd.MM.yyyy': null: 'he'}}
-					</ion-select-option>
-				</ion-select>
-			</ion-item>
-			<ion-item>
-				<ion-label>שעה</ion-label>
-				<ion-select (ionChange)="onHourChanged($event)"
-										cancelText="בטל"
-										okText="בחר"
-										placeholder="בחר שעה"
-                    formControlName="time"
-        >
-					<ion-select-option
-									*ngFor="let pair of appointments.availableHours"
-									[value]="pair"
-					>
-						{{pair.hours}}:{{pair.minutes}}
-					</ion-select-option>
-				</ion-select>
-			</ion-item>
-      <ion-button (click)="schedule()" color="primary" expand="full">
-        קבע תור
-      </ion-button>
-		</ion-list>
-	</ng-container>
+					{{day | date:'EEE dd.MM.yyyy': null: 'he'}}
+				</ion-select-option>
+			</ion-select>
+		</ion-item>
+		<ion-item>
+			<ion-label>שעה</ion-label>
+			<ion-select (ionChange)="onHourChanged($event)"
+									cancelText="בטל"
+									okText="בחר"
+									placeholder="בחר שעה"
+									formControlName="time"
+			>
+				<ion-select-option
+								*ngFor="let pair of availableHoursForDate$ | async"
+								[value]="pair"
+				>
+					{{pair.hours}}:{{pair.minutes}}
+				</ion-select-option>
+			</ion-select>
+		</ion-item>
+		<ion-button (click)="schedule()" color="primary" expand="full">
+			קבע תור
+		</ion-button>
+	</ion-list>
 </ion-content>

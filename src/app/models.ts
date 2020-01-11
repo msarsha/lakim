@@ -1,6 +1,6 @@
 export interface HoursMinutesPair {
-  hours: number;
-  minutes: number;
+  hours: number | string;
+  minutes: number | string;
 }
 
 export interface WorkingHours {
