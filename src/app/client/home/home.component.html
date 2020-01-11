@@ -9,6 +9,9 @@
 
 	<ion-list>
 		<ion-item *ngFor="let appointment of appointments$ | async">
+			<ion-text slot="end">
+				{{appointment.date | date:'HH:mm': null: 'he'}}
+			</ion-text>
       <ion-label>
         {{appointment.date | date:'EEE dd.MM.yyyy': null: 'he'}}
       </ion-label>
