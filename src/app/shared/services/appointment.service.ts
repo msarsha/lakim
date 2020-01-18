@@ -62,7 +62,10 @@ export class AppointmentService {
               const aid = appointmentSnapshot.payload.doc.id;
               return !!user.appointments[aid];
             })
-            .map(appointmentSnapshot => appointmentSnapshot.payload.doc.data());
+            .map(appointmentSnapshot => ({
+              ...appointmentSnapshot.payload.doc.data(),
+              id: appointmentSnapshot.payload.doc.id
+            }));
       }));
 
   constructor(private db: AngularFirestore,
@@ -92,6 +95,10 @@ export class AppointmentService {
           }));
         }));
 
+  }
+
+  cancelAppointment(id: string): Observable<any> {
+    return fromPromise(this.appointmentsCollection.doc(id).delete());
   }
 
   getAppointmentsForMonth(date: Date): Observable<Appointment[]> {

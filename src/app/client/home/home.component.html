@@ -8,7 +8,7 @@
 	</ion-fab>
 
 	<ion-list>
-		<ion-item *ngFor="let appointment of appointments$ | async">
+		<ion-item *ngFor="let appointment of appointments$ | async" (click)="openActions(appointment)">
 			<ion-text slot="end">
 				{{appointment.date | date:'HH:mm': null: 'he'}}
 			</ion-text>
