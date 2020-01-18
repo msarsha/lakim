@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
 
   async openActions(appointment: Appointment) {
     const actionSheet = await this.actionSheetController.create({
-      header: `${this.datePipe.transform(appointment.date, 'HH:mm', null, 'he')}`,
+      header: `${this.datePipe.transform(appointment.date, 'EEE dd.MM.yyyy', null, 'he')} ${this.datePipe.transform(appointment.date, 'HH:mm', null, 'he')}`,
       buttons: [{
         text: 'בטל תור',
         role: 'destructive',

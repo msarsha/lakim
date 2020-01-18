@@ -31,7 +31,7 @@ export class CalendarPage {
 
   async onEventSelected($event: IEvent & { id: string }) {
     const actionSheet = await this.actionSheetController.create({
-      header: `${this.datePipe.transform($event.startTime, 'HH:mm', null, 'he')}`,
+      header: `${this.datePipe.transform($event.startTime, 'EEE dd.MM.yyyy', null, 'he')} ${this.datePipe.transform($event.startTime, 'HH:mm', null, 'he')}`,
       buttons: [{
         text: 'בטל תור',
         role: 'destructive',
