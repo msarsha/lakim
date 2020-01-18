@@ -6,6 +6,7 @@ import {Appointment} from '../../models';
 import {DatePipe} from '@angular/common';
 import {ToastService} from '../../shared/services/toast.service';
 import {ToastTypes} from '../../shared/services/toast-types';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +16,7 @@ import {ToastTypes} from '../../shared/services/toast-types';
 })
 export class HomeComponent implements OnInit {
 
-  appointments$ = this.appointmentService.appointmentsForUser$;
+  appointments$ = this.appointmentService.appointmentsForUser$.pipe(tap(console.log));
 
   constructor(private appointmentService: AppointmentService,
               private modalCtrl: ModalController,
@@ -39,6 +40,10 @@ export class HomeComponent implements OnInit {
   }
 
   async openActions(appointment: Appointment) {
+    if (!appointment.canCancel) {
+      return;
+    }
+
     const actionSheet = await this.actionSheetController.create({
       header: `${this.datePipe.transform(appointment.date, 'EEE dd.MM.yyyy', null, 'he')} ${this.datePipe.transform(appointment.date, 'HH:mm', null, 'he')}`,
       buttons: [{

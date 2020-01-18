@@ -12,9 +12,12 @@
 			<ion-text slot="end">
 				{{appointment.date | date:'HH:mm': null: 'he'}}
 			</ion-text>
-      <ion-label>
-        {{appointment.date | date:'EEE dd.MM.yyyy': null: 'he'}}
-      </ion-label>
-    </ion-item>
+			<ion-label>
+				<h2>
+					{{appointment.date | date:'EEE dd.MM.yyyy': null: 'he'}}
+				</h2>
+				<p *ngIf="!appointment.canCancel"> לא ניתן לבטל תור זה</p>
+			</ion-label>
+		</ion-item>
 	</ion-list>
 </ion-content>

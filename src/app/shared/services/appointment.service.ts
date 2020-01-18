@@ -7,8 +7,10 @@ import {fromPromise} from 'rxjs/internal-compatibility';
 import {ScheduleService} from './schedule.service';
 import {SettingsService} from './settings.service';
 import {Appointment, HoursMinutesPair, Settings} from '../../models';
-import {endOfDay, format, lastDayOfMonth, set, startOfDay, startOfMonth} from 'date-fns';
+import {endOfDay, format, isBefore, lastDayOfMonth, set, startOfDay, startOfMonth, subHours} from 'date-fns';
 import {CustomersService} from '../../admin/customers/customers.service';
+
+const HOURS_DISTANCE_TO_CANCEL = 8;
 
 @Injectable({
   providedIn: 'root'
@@ -62,10 +64,14 @@ export class AppointmentService {
               const aid = appointmentSnapshot.payload.doc.id;
               return !!user.appointments[aid];
             })
-            .map(appointmentSnapshot => ({
-              ...appointmentSnapshot.payload.doc.data(),
-              id: appointmentSnapshot.payload.doc.id
-            }));
+            .map(appointmentSnapshot => {
+              const appointment = appointmentSnapshot.payload.doc.data() as Appointment;
+              return {
+                ...appointment,
+                id: appointmentSnapshot.payload.doc.id,
+                canCancel: this.canCancelAppointment(new Date(appointment.date))
+              };
+            });
       }));
 
   constructor(private db: AngularFirestore,
@@ -137,5 +143,11 @@ export class AppointmentService {
               });
             })
         );
+  }
+
+  private canCancelAppointment(date: Date) {
+    const allowedTimeToCancel = subHours(date, HOURS_DISTANCE_TO_CANCEL);
+    const now = new Date();
+    return isBefore(now, allowedTimeToCancel);
   }
 }

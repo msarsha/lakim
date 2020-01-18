@@ -30,4 +30,5 @@ export interface Appointment {
   uid?: string;
   name?: string;
   phone?: string;
+  canCancel?: boolean;
 }
