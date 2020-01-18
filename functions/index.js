@@ -26,3 +26,20 @@ exports.addAppointment = functions
 			});
 		});
 
+
+exports.cancelAppointment = functions
+		.firestore
+		.document('appointments/{aid}')
+		.onDelete(async (snap, context) => {
+			const aid = snap.id;
+			const uid = snap.data().uid;
+
+			const userProfile = await db.doc(`user-profiles/${uid}`).get();
+			const appointments = userProfile.data().appointments ? userProfile.data().appointments : {};
+
+			delete appointments[aid];
+
+			return db.doc(`user-profiles/${uid}`).update({
+				appointments
+			});
+		});
