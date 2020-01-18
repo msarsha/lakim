@@ -5,7 +5,6 @@ import {FormBuilder} from '@angular/forms';
 import {set} from 'date-fns';
 import {HoursMinutesPair} from '../../models';
 import {ScheduleService} from '../../shared/services/schedule.service';
-import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-select-appointment-modal',
@@ -14,7 +13,7 @@ import {tap} from 'rxjs/operators';
 })
 export class SelectAppointmentModalComponent implements OnInit {
   availableDates = this.scheduleService.getDatesForMonth(new Date().getMonth());
-  availableHoursForDate$ = this.appointmentService.availableHoursForDate$.pipe(tap(console.log));
+  availableHoursForDate$ = this.appointmentService.availableHoursForDate$;
 
   form = this.fb.group({
     day: [''],
@@ -41,7 +40,7 @@ export class SelectAppointmentModalComponent implements OnInit {
   }
 
   onHourChanged($event: CustomEvent) {
-    console.log($event);
+
   }
 
   schedule() {
