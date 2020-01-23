@@ -1,8 +1,6 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {HomeComponent} from './home/home.component';
-import {AngularFireAuthGuard} from '@angular/fire/auth-guard';
-
 
 const routes: Routes = [
   {
@@ -12,8 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    component: HomeComponent,
-    canActivate: [AngularFireAuthGuard]
+    component: HomeComponent
   }
 ];
 

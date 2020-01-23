@@ -35,7 +35,7 @@ export class SchedulePage {
           }))
       );
 
-  constructor(private settingsService: SettingsService, private scheduleService: ScheduleService) {
+  constructor(private settingsService: SettingsService) {
   }
 
   onAppointmentTimeChanged($event: CustomEvent) {

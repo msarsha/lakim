@@ -16,7 +16,7 @@ import {tap} from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
 
-  appointments$ = this.appointmentService.appointmentsForUser$.pipe(tap(console.log));
+  appointments$ = this.appointmentService.appointmentsForUser$;
 
   constructor(private appointmentService: AppointmentService,
               private modalCtrl: ModalController,
