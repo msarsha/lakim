@@ -12,7 +12,7 @@ import {ScheduleService} from '../../shared/services/schedule.service';
   styleUrls: ['./select-appointment-modal.component.scss'],
 })
 export class SelectAppointmentModalComponent implements OnInit {
-  availableDates = this.scheduleService.getDatesForMonth(new Date().getMonth());
+  availableDates$ = this.scheduleService.getDatesForMonth(new Date().getMonth());
   availableHoursForDate$ = this.appointmentService.availableHoursForDate$;
 
   form = this.fb.group({

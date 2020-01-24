@@ -26,12 +26,23 @@ export class ScheduleService {
         );
   }
 
-  getDatesForMonth(month: number): Date[] {
+  getDatesForMonth(month: number): Observable<Date[]> {
     const today = setMonth(new Date(), month);
-    return eachDayOfInterval({
-      start: today,
-      end: addDays(today, 60)
-    });
+    return this.settingsService.getSettings()
+        .pipe(
+            map(settings => settings.workingDays),
+            map((workingDays) => {
+              const twoMonthsDays = eachDayOfInterval({
+                start: today,
+                end: addDays(today, 60)
+              });
+
+              return twoMonthsDays
+                  .filter(date => workingDays.some((workingDay) => {
+                    return date.getDay() === workingDay;
+                  }));
+            })
+        );
   }
 
   private buildWorkingHours(interval: number, from: HoursMinutesPair, to: HoursMinutesPair): HoursMinutesPair[] {

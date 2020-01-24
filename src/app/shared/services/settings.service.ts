@@ -78,10 +78,10 @@ export class SettingsService {
         ).subscribe();
   }
 
-  getSettings(): Observable<any> {
+  getSettings(): Observable<Settings> {
     return this.settingsDocument.get()
         .pipe(
-            map(ref => ref.data())
+            map(ref => ref.data() as Settings)
         );
   }
 

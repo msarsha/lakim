@@ -22,7 +22,7 @@
 									#daySelect
 			>
 				<ion-select-option
-								*ngFor="let day of availableDates"
+								*ngFor="let day of availableDates$ | async"
 								[value]="day"
 				>
 					{{day | date:'EEE dd.MM.yyyy': null: 'he'}}
