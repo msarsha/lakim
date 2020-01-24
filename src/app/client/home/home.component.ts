@@ -2,11 +2,12 @@ import {Component, OnInit} from '@angular/core';
 import {AppointmentService} from '../../shared/services/appointment.service';
 import {ActionSheetController, ModalController} from '@ionic/angular';
 import {SelectAppointmentModalComponent} from '../select-appointment-modal/select-appointment-modal.component';
-import {Appointment} from '../../models';
+import {Appointment, Customer} from '../../models';
 import {DatePipe} from '@angular/common';
 import {ToastService} from '../../shared/services/toast.service';
 import {ToastTypes} from '../../shared/services/toast-types';
-import {tap} from 'rxjs/operators';
+import {UserService} from '../../shared/services/user.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -22,8 +23,16 @@ export class HomeComponent implements OnInit {
               private modalCtrl: ModalController,
               private actionSheetController: ActionSheetController,
               private datePipe: DatePipe,
-              private toastService: ToastService
+              private toastService: ToastService,
+              private userService: UserService,
+              private router: Router
   ) {
+    userService.currentUser$
+        .subscribe((user: Customer) => {
+          if (user && user.isAdmin) {
+            router.navigate(['admin']);
+          }
+        });
   }
 
   ngOnInit() {
