@@ -15,6 +15,7 @@ export interface Customer {
   phone: string;
   approved?: boolean;
   isAdmin?: boolean;
+  devices?: string[];
 }
 
 export interface Settings {

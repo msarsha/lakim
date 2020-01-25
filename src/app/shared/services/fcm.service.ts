@@ -11,6 +11,8 @@ import {
   PushNotificationToken,
   PushNotificationActionPerformed
 } from '@capacitor/core';
+import {Customer} from '../../models';
+import {CustomersService} from '../../admin/customers/customers.service';
 
 const {PushNotifications} = Plugins;
 const fcm = new FCM();
@@ -20,7 +22,7 @@ const fcm = new FCM();
 })
 export class FCMProvider {
 
-  constructor() {
+  constructor(private customersService: CustomersService) {
     this.initNotifications();
   }
 
@@ -59,5 +61,21 @@ export class FCMProvider {
           console.log('Push action performed: ' + JSON.stringify(notification));
         }
     );
+  }
+
+  addDeviceIfNeeded(user: Customer) {
+    fcm.getToken()
+        .then(({token}) => {
+          const {devices} = user;
+          if (devices && devices.includes(token)) {
+            return;
+          } else {
+            const updatedDevices = devices || [];
+            updatedDevices.push(token);
+            this.customersService
+                .updateDevices(user.id, updatedDevices)
+                .subscribe();
+          }
+        });
   }
 }

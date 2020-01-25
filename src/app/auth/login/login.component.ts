@@ -6,6 +6,7 @@ import {Customer} from '../../models';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ToastService} from '../../shared/services/toast.service';
 import {ToastTypes} from '../../shared/services/toast-types';
+import {FCMProvider} from '../../shared/services/fcm.service';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder,
               private auth: AuthenticationService,
               private router: Router,
-              private toastService: ToastService) {
+              private toastService: ToastService,
+              private fcm: FCMProvider) {
   }
 
   ngOnInit() {
@@ -33,6 +35,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.auth.login(this.form.value)
           .pipe(untilDestroyed(this))
           .subscribe(async (user: Customer) => {
+            this.fcm.addDeviceIfNeeded(user);
+
             if (user.isAdmin) {
               this.router.navigate(['admin']);
             } else if (user.approved) {

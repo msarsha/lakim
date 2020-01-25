@@ -11,7 +11,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "run:ios": "ionic capacitor run ios -l --address=0.0.0.0",
-    "run:android": "ionic capacitor run android",
+    "run:android": "ionic capacitor run android --livereload --external",
     "deploy": "ionic build && firebase deploy"
   },
   "private": true,

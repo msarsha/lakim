@@ -28,6 +28,5 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     // Register with Apple / Google to receive push via APNS/FCM
-
   }
 }
