@@ -4,6 +4,8 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {ToastTypes} from '../../shared/services/toast-types';
 import {ToastService} from '../../shared/services/toast.service';
 import {Router} from '@angular/router';
+import {FCMProvider} from '../../shared/services/fcm.service';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-signup',
@@ -22,7 +24,8 @@ export class SignupComponent implements OnInit {
   constructor(private auth: AuthenticationService,
               private fb: FormBuilder,
               private toastService: ToastService,
-              private router: Router) {
+              private router: Router,
+              private fcm: FCMProvider) {
   }
 
   ngOnInit() {
@@ -30,8 +33,11 @@ export class SignupComponent implements OnInit {
 
   signup() {
     if (this.form.valid) {
-      this.auth
-          .signup(this.form.value)
+      this.fcm.getToken()
+          .pipe(
+              switchMap((token) => this.auth
+                  .signup({...this.form.value, token}))
+          )
           .subscribe(async () => {
             await this.toastService.open(ToastTypes.NOT_APPROVED);
             this.router.navigate(['auth', 'login']);

@@ -9,6 +9,32 @@ const db = admin.firestore();
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
 
+exports.signupNotification = functions
+		.firestore
+		.document('user-profiles/{uid}')
+		.onCreate(async (doc) => {
+			const data = doc.data();
+
+			const adminsQuery = db.collection('user-profiles')
+					.where('isAdmin', '==', true);
+
+			const adminDocs = await adminsQuery.get();
+			let tokens = [];
+
+			adminDocs.forEach((doc) => {
+				tokens = tokens.concat(doc.data().devices);
+			});
+
+			const notificationPayload = {
+				notification: {
+					title: 'לקוח חדש',
+					body: 'לקוח חדש נרשם! נא לאשר אותו'
+				}
+			};
+
+			return admin.messaging().sendToDevice(tokens, notificationPayload);
+		});
+
 exports.addAppointment = functions
 		.firestore
 		.document('appointments/{aid}')

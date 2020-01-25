@@ -38,9 +38,7 @@ export class ScheduleService {
               });
 
               return twoMonthsDays
-                  .filter(date => workingDays.some((workingDay) => {
-                    return date.getDay() === workingDay;
-                  }));
+                  .filter(date => workingDays.some(workingDay => date.getDay() === workingDay));
             })
         );
   }
