@@ -1,5 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const format = require('date-fns/format');
+const subMinutes = require('date-fns/subMinutes')
 
 admin.initializeApp();
 
@@ -15,24 +17,14 @@ exports.signupNotification = functions
 		.onCreate(async (doc) => {
 			const data = doc.data();
 
-			const adminsQuery = db.collection('user-profiles')
-					.where('isAdmin', '==', true);
-
-			const adminDocs = await adminsQuery.get();
-			let tokens = [];
-
-			adminDocs.forEach((doc) => {
-				tokens = tokens.concat(doc.data().devices);
-			});
-
 			const notificationPayload = {
 				notification: {
 					title: 'לקוח חדש',
-					body: 'לקוח חדש נרשם! נא לאשר אותו'
+					body: ` נרשם כלקוח חדש. לחץ כדי לאשר${data.name}`
 				}
 			};
 
-			return admin.messaging().sendToDevice(tokens, notificationPayload);
+			return sendNotificationToAdmins(notificationPayload);
 		});
 
 exports.addAppointment = functions
@@ -41,15 +33,29 @@ exports.addAppointment = functions
 		.onCreate(async (snap, context) => {
 			const aid = snap.id;
 			const uid = snap.data().uid;
+			const appointmentData = snap.data();
 
 			const userProfile = await db.doc(`user-profiles/${uid}`).get();
-			const appointments = userProfile.data().appointments ? userProfile.data().appointments : {};
+			const userProfileData = userProfile.data();
+			const appointments = userProfileData.appointments ? userProfileData.appointments : {};
 
 			appointments[aid] = true;
 
-			return db.doc(`user-profiles/${uid}`).update({
+			await db.doc(`user-profiles/${uid}`).update({
 				appointments
 			});
+
+			const appointmentDate = subMinutes(new Date(appointmentData.date), appointmentData.timeZoneOffset || 0);
+			const formattedDate = format(appointmentDate, 'dd/MM/yyyy');
+			const formattedHour = format(appointmentDate, 'HH:mm');
+			const notificationPayload = {
+				notification: {
+					title: 'נקבע תור חדש',
+					body: ` ${userProfileData.name} תיאם תור חדש בתאריך: ${formattedDate} בשעה ${formattedHour}`
+				}
+			};
+
+			return sendNotificationToAdmins(notificationPayload);
 		});
 
 
@@ -59,13 +65,42 @@ exports.cancelAppointment = functions
 		.onDelete(async (snap, context) => {
 			const aid = snap.id;
 			const uid = snap.data().uid;
+			const appointmentData = snap.data();
 
 			const userProfile = await db.doc(`user-profiles/${uid}`).get();
-			const appointments = userProfile.data().appointments ? userProfile.data().appointments : {};
+			const userProfileData = userProfile.data();
+			const appointments = userProfileData.appointments ? userProfileData.appointments : {};
 
 			delete appointments[aid];
 
-			return db.doc(`user-profiles/${uid}`).update({
+			await db.doc(`user-profiles/${uid}`).update({
 				appointments
 			});
+
+			const appointmentDate = subMinutes(new Date(appointmentData.date), appointmentData.timeZoneOffset || 0);
+			const formattedDate = format(appointmentDate, 'dd/MM/yyyy');
+			const formattedHour = format(appointmentDate, 'HH:mm');
+			const notificationPayload = {
+				notification: {
+					title: 'תור בוטל',
+					body: ` ${userProfileData.name} ביטל תור בתאריך: ${formattedDate} בשעה ${formattedHour}`
+				}
+			};
+
+			return sendNotificationToAdmins(notificationPayload);
 		});
+
+
+async function sendNotificationToAdmins(payload) {
+	const adminsQuery = db.collection('user-profiles')
+			.where('isAdmin', '==', true);
+
+	const adminDocs = await adminsQuery.get();
+	let tokens = [];
+
+	adminDocs.forEach((doc) => {
+		tokens = tokens.concat(doc.data().devices);
+	});
+
+	return admin.messaging().sendToDevice(tokens, payload);
+}

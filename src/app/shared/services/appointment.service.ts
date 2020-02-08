@@ -97,7 +97,8 @@ export class AppointmentService {
             phone,
             name,
             length: settings.appointmentTime,
-            date: date.getTime()
+            date: date.getTime(),
+            timeZoneOffset: date.getTimezoneOffset()
           }));
         }));
 
