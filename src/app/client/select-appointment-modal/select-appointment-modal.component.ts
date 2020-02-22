@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {ModalController} from '@ionic/angular';
+import {AlertController, ModalController, NavParams} from '@ionic/angular';
 import {AppointmentService} from '../../shared/services/appointment.service';
 import {FormBuilder} from '@angular/forms';
 import {set} from 'date-fns';
-import {HoursMinutesPair} from '../../models';
+import {Appointment, HoursMinutesPair} from '../../models';
 import {ScheduleService} from '../../shared/services/schedule.service';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-select-appointment-modal',
@@ -14,20 +15,28 @@ import {ScheduleService} from '../../shared/services/schedule.service';
 export class SelectAppointmentModalComponent implements OnInit {
   availableDates$ = this.scheduleService.getDatesForMonth(new Date().getMonth());
   availableHoursForDate$ = this.appointmentService.availableHoursForDate$;
+  allHoursForDate$ = this.appointmentService.allHoursForDate$;
+
+  hoursForDisplay$: Observable<HoursMinutesPair[]>;
 
   form = this.fb.group({
     day: [''],
     time: [{value: '', disabled: true}]
   });
 
+  private selectedPair: HoursMinutesPair;
+
   constructor(private modalCtrl: ModalController,
               private appointmentService: AppointmentService,
               private scheduleService: ScheduleService,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private navParams: NavParams,
+              private alertCtrl: AlertController) {
   }
 
   ngOnInit() {
-
+    const showALl = this.navParams.get('showAll');
+    this.hoursForDisplay$ = showALl ? this.allHoursForDate$ : this.availableHoursForDate$;
   }
 
   close() {
@@ -40,10 +49,51 @@ export class SelectAppointmentModalComponent implements OnInit {
   }
 
   onHourChanged($event: CustomEvent) {
-
+    this.selectedPair = $event.detail.value;
   }
 
-  schedule() {
+  get appointmentToSwap(): Appointment {
+    return this.navParams.get('appointment');
+  }
+
+  async onSchedule() {
+    if (!this.selectedPair) {
+      return;
+    }
+
+    if (this.selectedPair.booked) {
+      const alert = await this.alertCtrl.create({
+        header: 'התור הנבחר תפוס',
+        message: 'האם לשלוח בקשת החלפה?',
+        buttons: [
+          {
+            text: 'בטל',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel');
+            }
+          }, {
+            text: 'כן',
+            handler: () => {
+              console.log(this.appointmentToSwap);
+            }
+          }
+        ]
+      });
+
+      const res = await alert.present();
+      console.log(res);
+    } else {
+      // TODO cancel original appointment
+      if (this.appointmentToSwap) {
+        this.appointmentService.cancelAppointment(this.appointmentToSwap.id);
+      }
+
+      this.schedule();
+    }
+  }
+
+  private schedule() {
     const {day, time: {hours, minutes}}: { day: Date, time: HoursMinutesPair } = this.form.value;
     const appointmentDate = set(day, {hours: hours as number, minutes: minutes as number});
     this.appointmentService.scheduleAppointment(appointmentDate)

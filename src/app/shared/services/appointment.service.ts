@@ -24,7 +24,7 @@ export class AppointmentService {
 
   appointments$ = this.appointmentsCollection.snapshotChanges();
 
-  availableHoursForDate$: Observable<HoursMinutesPair[]> = combineLatest([
+  allHoursForDate$: Observable<HoursMinutesPair[]> = combineLatest([
     this.selectedDateForAvailableHoursBS
         .asObservable()
         .pipe(
@@ -39,15 +39,21 @@ export class AppointmentService {
             }))
         ),
     this.scheduleService.getWorkingHours()
-  ])
+  ]).pipe(
+      map(([takenAppointments, availableHours]) => {
+        return availableHours.map(
+            (availablePair) => {
+              const booked = !!takenAppointments.find(
+                  takenPair => availablePair.hours === takenPair.hours && availablePair.minutes === takenPair.minutes
+              );
+              return {...availablePair, booked};
+            });
+      })
+  );
+
+  availableHoursForDate$: Observable<HoursMinutesPair[]> = this.allHoursForDate$
       .pipe(
-          map(([takenAppointments, availableHours]) => {
-            return availableHours.filter(
-                availablePair =>
-                    !takenAppointments.find(
-                        takenPair => availablePair.hours === takenPair.hours && availablePair.minutes === takenPair.minutes
-                    ));
-          })
+          map(allHours => allHours.filter(pair => !pair.booked))
       );
 
   appointmentsForUser$: Observable<any> = combineLatest([
@@ -77,11 +83,11 @@ export class AppointmentService {
   constructor(private db: AngularFirestore,
               private userService: UserService,
               private scheduleService: ScheduleService,
-              private settingsService: SettingsService,
-              private customersService: CustomersService) {
+              private settingsService: SettingsService) {
   }
 
   private getAppointmentsForDay(date: Date): Observable<Appointment[]> {
+    console.log(date);
     const startOfDate = startOfDay(date);
     const endOfDate = endOfDay(date);
 

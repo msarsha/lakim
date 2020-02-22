@@ -38,14 +38,14 @@
 									formControlName="time"
 			>
 				<ion-select-option
-								*ngFor="let pair of availableHoursForDate$ | async"
+								*ngFor="let pair of hoursForDisplay$ | async"
 								[value]="pair"
 				>
 					{{pair.hours}}:{{pair.minutes}}
 				</ion-select-option>
 			</ion-select>
 		</ion-item>
-		<ion-button (click)="schedule()" color="primary" expand="full">
+		<ion-button (click)="onSchedule()" color="primary" expand="full">
 			קבע תור
 		</ion-button>
 	</ion-list>

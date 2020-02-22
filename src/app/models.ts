@@ -1,6 +1,7 @@
 export interface HoursMinutesPair {
   hours: number | string;
   minutes: number | string;
+  booked?: boolean;
 }
 
 export interface WorkingHours {

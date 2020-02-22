@@ -38,14 +38,19 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
   }
 
-  async createAppointment() {
+  async createAppointment(swap?: boolean, appointment?: Appointment): Promise<any> {
     const modal = await this.modalCtrl.create({
-      component: SelectAppointmentModalComponent
+      component: SelectAppointmentModalComponent,
+      componentProps: {
+        showAll: swap,
+        appointment
+      }
     });
 
     await modal.present();
 
     const {data} = await modal.onWillDismiss();
+    return data;
   }
 
   async openActions(appointment: Appointment) {
@@ -65,6 +70,13 @@ export class HomeComponent implements OnInit {
               .subscribe(() => {
                 this.toastService.open(ToastTypes.APPOINTMENT_CANCELED);
               });
+        }
+      }, {
+        text: 'החלף תור',
+        icon: 'swap',
+        handler: () => {
+          const data = this.createAppointment(true, appointment);
+          console.log(data);
         }
       }, {
         text: 'סגור',
