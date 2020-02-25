@@ -10,15 +10,13 @@ import {SelectAppointmentModalComponent} from './select-appointment-modal/select
 
 
 @NgModule({
-  declarations: [HomeComponent, SelectAppointmentModalComponent],
+  declarations: [],
   imports: [
     CommonModule,
     ClientRoutingModule,
-    IonicModule,
-    ReactiveFormsModule,
-    SharedModule
+    IonicModule
   ],
-  entryComponents: [SelectAppointmentModalComponent]
+  entryComponents: []
 })
 export class ClientModule {
 }

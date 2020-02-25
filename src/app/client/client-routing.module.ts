@@ -5,12 +5,12 @@ import {HomeComponent} from './home/home.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'tabs',
     pathMatch: 'full'
   },
   {
-    path: 'home',
-    component: HomeComponent
+    path: 'tabs',
+    loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   }
 ];
 

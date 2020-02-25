@@ -9,7 +9,7 @@ const redirectUnauthorizedToLogin = () => {
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/client/home',
+    redirectTo: '/client/tabs/home',
     pathMatch: 'full'
   },
   {
@@ -28,7 +28,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/client/home'
+    redirectTo: '/client/tabs/home'
   }
 ];
 
