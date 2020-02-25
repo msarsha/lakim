@@ -11,6 +11,16 @@ const db = admin.firestore();
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
 
+
+// {appointment, swapWith}
+exports.addSwap = functions
+		.firestore
+		.document('swaps/{uid}')
+		.onCreate(async (doc) => {
+			const data = doc.data();
+			console.log(data);
+		});
+
 exports.signupNotification = functions
 		.firestore
 		.document('user-profiles/{uid}')

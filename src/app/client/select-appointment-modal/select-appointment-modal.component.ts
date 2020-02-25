@@ -6,6 +6,7 @@ import {set} from 'date-fns';
 import {Appointment, HoursMinutesPair} from '../../models';
 import {ScheduleService} from '../../shared/services/schedule.service';
 import {Observable} from 'rxjs';
+import {SwapService} from '../../shared/services/swap.service';
 
 @Component({
   selector: 'app-select-appointment-modal',
@@ -31,7 +32,8 @@ export class SelectAppointmentModalComponent implements OnInit {
               private scheduleService: ScheduleService,
               private fb: FormBuilder,
               private navParams: NavParams,
-              private alertCtrl: AlertController) {
+              private alertCtrl: AlertController,
+              private swapService: SwapService) {
   }
 
   ngOnInit() {
@@ -75,16 +77,19 @@ export class SelectAppointmentModalComponent implements OnInit {
           }, {
             text: 'כן',
             handler: () => {
-              console.log(this.appointmentToSwap);
+              console.log(this.appointmentToSwap, this.selectedPair);
+              this.swapService
+                  .createSwap(this.appointmentToSwap, this.selectedPair as Appointment)
+                  .subscribe(() => {
+                    this.close();
+                  });
             }
           }
         ]
       });
 
-      const res = await alert.present();
-      console.log(res);
+      await alert.present();
     } else {
-      // TODO cancel original appointment
       if (this.appointmentToSwap) {
         this.appointmentService.cancelAppointment(this.appointmentToSwap.id);
       }

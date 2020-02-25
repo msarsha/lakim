@@ -1,14 +1,13 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {UserService} from './user.service';
-import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {combineLatest, Observable, Subject} from 'rxjs';
+import {map, switchMap} from 'rxjs/operators';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {ScheduleService} from './schedule.service';
 import {SettingsService} from './settings.service';
 import {Appointment, HoursMinutesPair, Settings} from '../../models';
 import {endOfDay, format, isBefore, lastDayOfMonth, set, startOfDay, startOfMonth, subHours} from 'date-fns';
-import {CustomersService} from '../../admin/customers/customers.service';
 
 const HOURS_DISTANCE_TO_CANCEL = 8;
 
@@ -35,7 +34,7 @@ export class AppointmentService {
               const date = new Date(appointment.date);
               const hours = format(date, 'HH');
               const minutes = format(date, 'mm');
-              return {minutes, hours} as HoursMinutesPair;
+              return {minutes, hours, ...appointment} as HoursMinutesPair;
             }))
         ),
     this.scheduleService.getWorkingHours()
@@ -43,10 +42,16 @@ export class AppointmentService {
       map(([takenAppointments, availableHours]) => {
         return availableHours.map(
             (availablePair) => {
-              const booked = !!takenAppointments.find(
+              let obj = {};
+              const bookedAppointment = takenAppointments.find(
                   takenPair => availablePair.hours === takenPair.hours && availablePair.minutes === takenPair.minutes
               );
-              return {...availablePair, booked};
+
+              if (bookedAppointment) {
+                obj = bookedAppointment;
+              }
+
+              return {...availablePair, booked: !!bookedAppointment, ...obj};
             });
       })
   );
