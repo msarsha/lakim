@@ -1,7 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const format = require('date-fns/format');
-const subMinutes = require('date-fns/subMinutes')
+const subMinutes = require('date-fns/subMinutes');
 
 admin.initializeApp();
 
@@ -10,16 +10,30 @@ const db = admin.firestore();
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
-
-
 // {appointment, swapWith}
 exports.addSwap = functions
 		.firestore
 		.document('swaps/{uid}')
 		.onCreate(async (doc) => {
-			const data = doc.data();
-			console.log(data);
+			const swapData = doc.data();
+			const fromUid = swapData.appointment.uid;
+			const toUid = swapData.swapWith.uid;
+			const swapId = doc.id;
+
+			await addSwap(swapId, fromUid);
+			return addSwap(swapId, toUid);
 		});
+
+async function addSwap(swapId, uid) {
+	const userProfileDoc = db.doc(`user-profiles/${uid}`);
+	const userProfileData = await userProfileDoc.get();
+	const swaps = userProfileData['swaps'] || {};
+	swaps[swapId] = true;
+
+	return userProfileDoc.update({
+		swaps
+	});
+}
 
 exports.signupNotification = functions
 		.firestore

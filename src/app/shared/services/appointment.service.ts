@@ -92,7 +92,6 @@ export class AppointmentService {
   }
 
   private getAppointmentsForDay(date: Date): Observable<Appointment[]> {
-    console.log(date);
     const startOfDate = startOfDay(date);
     const endOfDate = endOfDay(date);
 
@@ -112,7 +111,6 @@ export class AppointmentService {
             timeZoneOffset: date.getTimezoneOffset()
           }));
         }));
-
   }
 
   cancelAppointment(id: string): Observable<any> {
@@ -124,14 +122,6 @@ export class AppointmentService {
     const lastDayOfMonthEpoch = lastDayOfMonth(date);
 
     return this.getAppointmentsForRange(firstDayOfMonthEpoch, lastDayOfMonthEpoch);
-  }
-
-  getAvailableAppointments(month: number): Observable<any> {
-    return this.scheduleService.getWorkingHours()
-        .pipe(map((availableHours) => ({
-          availableHours,
-          daysInMonth: this.scheduleService.getDatesForMonth(month)
-        })));
   }
 
   selectDateForAvailableHours(date: Date) {
