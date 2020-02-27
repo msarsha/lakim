@@ -17,7 +17,8 @@ export class SwapService {
     return fromPromise(
         this.swapsCollection.add({
           appointment,
-          swapWith
+          swapWith,
+          createDate: new Date().getTime()
         })
     );
   }

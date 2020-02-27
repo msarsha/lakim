@@ -36,19 +36,6 @@ exports.addSwap = functions
 			return sendNotificationToUser(notificationPayload, toUid);
 		});
 
-async function addSwap(swapId, uid) {
-	const userProfileDoc = db.doc(`user-profiles/${uid}`);
-	const userProfileRes = await userProfileDoc.get();
-	const userProfileData = userProfileRes.data();
-	const swaps = userProfileData.swaps ? userProfileData.swaps : {};
-
-	swaps[swapId] = true;
-
-	return userProfileDoc.update({
-		swaps
-	});
-}
-
 exports.signupNotification = functions
 		.firestore
 		.document('user-profiles/{uid}')
@@ -83,7 +70,7 @@ exports.addAppointment = functions
 				appointments
 			});
 
-			const appointmentDate = subMinutes(new Date(appointmentData.date), appointmentData.timeZoneOffset || 0);
+			const appointmentDate = buildDate(appointmentData);
 			const formattedDate = format(appointmentDate, 'dd/MM/yyyy');
 			const formattedHour = format(appointmentDate, 'HH:mm');
 			const notificationPayload = {
@@ -95,7 +82,6 @@ exports.addAppointment = functions
 
 			return sendNotificationToAdmins(notificationPayload);
 		});
-
 
 exports.cancelAppointment = functions
 		.firestore
@@ -115,7 +101,7 @@ exports.cancelAppointment = functions
 				appointments
 			});
 
-			const appointmentDate = subMinutes(new Date(appointmentData.date), appointmentData.timeZoneOffset || 0);
+			const appointmentDate = buildDate(appointmentData);
 			const formattedDate = format(appointmentDate, 'dd/MM/yyyy');
 			const formattedHour = format(appointmentDate, 'HH:mm');
 			const notificationPayload = {
@@ -128,6 +114,19 @@ exports.cancelAppointment = functions
 			return sendNotificationToAdmins(notificationPayload);
 		});
 
+
+async function addSwap(swapId, uid) {
+	const userProfileDoc = db.doc(`user-profiles/${uid}`);
+	const userProfileRes = await userProfileDoc.get();
+	const userProfileData = userProfileRes.data();
+	const swaps = userProfileData.swaps ? userProfileData.swaps : {};
+
+	swaps[swapId] = true;
+
+	return userProfileDoc.update({
+		swaps
+	});
+}
 
 async function sendNotificationToAdmins(payload) {
 	const adminsQuery = db.collection('user-profiles')
