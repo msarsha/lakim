@@ -1,0 +1,23 @@
+<app-lakim-header title="החלפות תורים"></app-lakim-header>
+
+<ion-content>
+	<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+		<ion-fab-button (click)="createAppointment()">
+			<ion-icon name="add"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
+
+	<ion-list>
+		<ion-item *ngFor="let appointment of appointments$ | async" (click)="openActions(appointment)">
+			<ion-text slot="end">
+				{{appointment.date | date:'HH:mm': null: 'he'}}
+			</ion-text>
+			<ion-label>
+				<h2>
+					{{appointment.date | date:'EEE dd.MM.yyyy': null: 'he'}}
+				</h2>
+				<p *ngIf="!appointment.canCancel"> לא ניתן לבטל תור זה</p>
+			</ion-label>
+		</ion-item>
+	</ion-list>
+</ion-content>

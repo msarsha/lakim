@@ -3,6 +3,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {TabsPage} from './tabs.page';
 import {AngularFireAuthGuard} from '@angular/fire/auth-guard';
 import {HomeComponent} from '../home/home.component';
+import {SwapsComponent} from '../swaps/swaps.component';
 
 const routes: Routes = [
   {
@@ -14,15 +15,10 @@ const routes: Routes = [
         path: 'home',
         component: HomeComponent
       },
-      // {
-      //   path: 'swaps',
-      //   children: [
-      //     {
-      //       path: '',
-      //       component:
-      //     }
-      //   ]
-      // },
+      {
+        path: 'swaps',
+        component: SwapsComponent
+      },
       {
         path: '',
         redirectTo: '/client/tabs/home',

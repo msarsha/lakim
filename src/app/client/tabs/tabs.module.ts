@@ -9,6 +9,7 @@ import {TabsPage} from './tabs.page';
 import {HomeComponent} from '../home/home.component';
 import {SelectAppointmentModalComponent} from '../select-appointment-modal/select-appointment-modal.component';
 import {SharedModule} from '../../shared/shared.module';
+import {SwapsComponent} from '../swaps/swaps.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,7 @@ import {SharedModule} from '../../shared/shared.module';
     ReactiveFormsModule,
     SharedModule
   ],
-  declarations: [TabsPage, HomeComponent, SelectAppointmentModalComponent],
+  declarations: [TabsPage, HomeComponent, SelectAppointmentModalComponent, SwapsComponent],
   entryComponents: [SelectAppointmentModalComponent]
 })
 export class TabsPageModule {
