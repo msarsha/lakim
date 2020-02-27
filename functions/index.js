@@ -21,13 +21,27 @@ exports.addSwap = functions
 			const swapId = doc.id;
 
 			await addSwap(swapId, fromUid);
-			return addSwap(swapId, toUid);
+			await addSwap(swapId, toUid);
+
+			const appointmentDate = buildDate(swapData.swapWith);
+			const formattedDate = format(appointmentDate, 'dd/MM/yyyy');
+
+			const notificationPayload = {
+				notification: {
+					title: 'בקשה להחלפת תור',
+					body: `התקבלה בקשה להחלפת התור בתאריך ${formattedDate}`
+				}
+			};
+
+			return sendNotificationToUser(notificationPayload, toUid);
 		});
 
 async function addSwap(swapId, uid) {
 	const userProfileDoc = db.doc(`user-profiles/${uid}`);
-	const userProfileData = await userProfileDoc.get();
-	const swaps = userProfileData['swaps'] || {};
+	const userProfileRes = await userProfileDoc.get();
+	const userProfileData = userProfileRes.data();
+	const swaps = userProfileData.swaps ? userProfileData.swaps : {};
+
 	swaps[swapId] = true;
 
 	return userProfileDoc.update({
@@ -127,4 +141,14 @@ async function sendNotificationToAdmins(payload) {
 	});
 
 	return admin.messaging().sendToDevice(tokens, payload);
+}
+
+async function sendNotificationToUser(payload, uid) {
+	const profileData = await db.doc(`user-profiles/${uid}`).get();
+	const devices = profileData.data().devices || [];
+	return admin.messaging().sendToDevice(devices, payload);
+}
+
+function buildDate(appointment) {
+	return subMinutes(new Date(appointment.date), appointment.timeZoneOffset || 0);
 }
