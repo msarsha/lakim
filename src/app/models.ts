@@ -34,3 +34,10 @@ export interface Appointment {
   phone?: string;
   canCancel?: boolean;
 }
+
+export interface Swap {
+  id: string;
+  appointment: Appointment;
+  swapWith: Appointment;
+  createDate: number | Date;
+}

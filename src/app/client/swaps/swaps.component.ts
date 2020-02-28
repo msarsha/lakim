@@ -1,25 +1,24 @@
 import {Component, OnInit} from '@angular/core';
-import {AppointmentService} from '../../shared/services/appointment.service';
 import {ActionSheetController, ModalController} from '@ionic/angular';
-import {SelectAppointmentModalComponent} from '../select-appointment-modal/select-appointment-modal.component';
-import {Appointment, Customer} from '../../models';
+import {Swap} from '../../models';
 import {DatePipe} from '@angular/common';
 import {ToastService} from '../../shared/services/toast.service';
-import {ToastTypes} from '../../shared/services/toast-types';
 import {UserService} from '../../shared/services/user.service';
 import {Router} from '@angular/router';
+import {SwapService} from '../../shared/services/swap.service';
+import {ToastTypes} from '../../shared/services/toast-types';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-swap',
   templateUrl: './swaps.component.html',
   styleUrls: ['./swaps.component.scss'],
   providers: [DatePipe]
 })
 export class SwapsComponent implements OnInit {
 
-  appointments$ = this.appointmentService.appointmentsForUser$;
+  swaps$ = this.swapsService.swapsForUser$;
 
-  constructor(private appointmentService: AppointmentService,
+  constructor(private swapsService: SwapService,
               private modalCtrl: ModalController,
               private actionSheetController: ActionSheetController,
               private datePipe: DatePipe,
@@ -27,56 +26,28 @@ export class SwapsComponent implements OnInit {
               private userService: UserService,
               private router: Router
   ) {
-    userService.currentUser$
-        .subscribe((user: Customer) => {
-          if (user && user.isAdmin) {
-            router.navigate(['admin']);
-          }
-        });
+
   }
 
   ngOnInit() {
   }
 
-  async createAppointment(swap?: boolean, appointment?: Appointment): Promise<any> {
-    const modal = await this.modalCtrl.create({
-      component: SelectAppointmentModalComponent,
-      componentProps: {
-        showAll: swap,
-        appointment
-      }
-    });
-
-    await modal.present();
-
-    const {data} = await modal.onWillDismiss();
-    return data;
-  }
-
-  async openActions(appointment: Appointment) {
-    if (!appointment.canCancel) {
-      return;
-    }
-
+  async openActions(swap: Swap) {
+    console.log(swap);
     const actionSheet = await this.actionSheetController.create({
-      header: `${this.datePipe.transform(appointment.date, 'EEE dd.MM.yyyy', null, 'he')} ${this.datePipe.transform(appointment.date, 'HH:mm', null, 'he')}`,
+      header: `האם לאשר החלפת התור?`,
       buttons: [{
-        text: 'בטל תור',
+        text: 'דחה',
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.appointmentService
-              .cancelAppointment(appointment.id)
-              .subscribe(() => {
-                this.toastService.open(ToastTypes.APPOINTMENT_CANCELED);
-              });
+          this.swapsService.rejectRequest(swap);
         }
       }, {
-        text: 'החלף תור',
+        text: 'אשר',
         icon: 'swap',
         handler: () => {
-          const data = this.createAppointment(true, appointment);
-          console.log(data);
+          this.swapsService.approveRequest(swap);
         }
       }, {
         text: 'סגור',
