@@ -28,8 +28,8 @@ exports.addSwap = functions
 
 			const notificationPayload = {
 				notification: {
-					title: 'בקשה להחלפת תור',
-					body: `התקבלה בקשה להחלפת התור בתאריך ${formattedDate}`
+					title: 'החלפת תור',
+					body: `התקבלה בקשה להחלפת תור`
 				}
 			};
 
