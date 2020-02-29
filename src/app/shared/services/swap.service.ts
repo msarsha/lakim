@@ -35,8 +35,11 @@ export class SwapService {
       })
   );
 
-  incomingRequestsForUser$ = this.buildSwapsObservable('swapWith', (swap: any) => !swap.isRejected && !swap.approved);
-  sentRequestsForUser$ = this.buildSwapsObservable('appointment', (swap: any) => true);
+  incomingRequestsForUser$ = this.buildSwapsObservable('swapWith',
+      (swap: any) => !swap.isRejected && !swap.approved);
+
+  sentRequestsForUser$ = this.buildSwapsObservable('appointment',
+      () => true);
 
   constructor(private db: AngularFirestore,
               private userService: UserService) {
@@ -81,7 +84,8 @@ export class SwapService {
           }
 
           const uid = user.id;
-          return swaps.filter((swap: any) => swap[property].uid === uid && condition(swap));
+          const filteredSwaps = swaps.filter((swap: any) => swap[property].uid === uid && condition(swap));
+          return filteredSwaps.sort((s1, s2) => (s2.createDate as number) - (s1.createDate as number));
         })
     );
   }

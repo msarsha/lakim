@@ -38,7 +38,7 @@ export const ToastConfigs = {
       }
     ]
   },
-  [ToastTypes.SWAP_REJECTED]: {
+  [ToastTypes.SWAP_CANCELED]: {
     message: 'הבקשה בוטלה',
     duration: DURATION,
     buttons: [
