@@ -48,8 +48,28 @@ async function rejectSwap(swapData, swapId) {
 	return sendNotificationToUser(notificationPayload, uid);
 }
 
-async function approveSwap(swapData, swapId) {
+async function approveSwap(swapData) {
+	// remove appointments ref from userProfile.appointments (for both users)
+	await removeAppointmentFromUser(swapData.appointment.uid, swapData.appointment.id);
+	await removeAppointmentFromUser(swapData.swapWith.uid, swapData.swapWith.id);
 
+	// swap uid in both appointments
+	await setUserForAppointment(swapData.appointment.uid, swapData.swapWith.id);
+	await setUserForAppointment(swapData.swapWith.uid, swapData.appointment.id);
+
+	// add appointment id ref in userProfiles.appointments (for both users)
+	await addAppointmentToUser(swapData.appointment.uid, swapData.swapWith.id);
+	await addAppointmentToUser(swapData.swapWith.uid, swapData.appointment.id);
+
+	// send push to swap.appointment.uid that swap approved
+	const notificationPayload = {
+		notification: {
+			title: 'החלפת תור',
+			body: `החלפת תור אושרה`
+		}
+	};
+
+	return sendNotificationToUser(notificationPayload, swapData.appointment.uid);
 }
 
 exports.updateSwap = functions
@@ -61,8 +81,8 @@ exports.updateSwap = functions
 			const swapId = doc.after.id;
 
 			if (swapData.approved) {
-				return approveSwap(swapData, swapId);
-			} else if (swapData.rejected) {
+				return approveSwap(swapData);
+			} else {
 				return rejectSwap(swapData, swapId);
 			}
 		});
@@ -110,15 +130,11 @@ exports.addAppointment = functions
 			const uid = snap.data().uid;
 			const appointmentData = snap.data();
 
-			const userProfile = await db.doc(`user-profiles/${uid}`).get();
-			const userProfileData = userProfile.data();
-			const appointments = userProfileData.appointments ? userProfileData.appointments : {};
+			await addAppointmentToUser(uid, aid);
 
-			appointments[aid] = true;
-
-			await db.doc(`user-profiles/${uid}`).update({
-				appointments
-			});
+			const userProfileData = await db.doc(`user-profiles/${uid}`)
+					.get()
+					.then(ref => ref.data());
 
 			const appointmentDate = buildDate(appointmentData);
 			const formattedDate = format(appointmentDate, 'dd/MM/yyyy');
@@ -141,15 +157,10 @@ exports.cancelAppointment = functions
 			const uid = snap.data().uid;
 			const appointmentData = snap.data();
 
+			await removeAppointmentFromUser(uid, aid);
+
 			const userProfile = await db.doc(`user-profiles/${uid}`).get();
 			const userProfileData = userProfile.data();
-			const appointments = userProfileData.appointments ? userProfileData.appointments : {};
-
-			delete appointments[aid];
-
-			await db.doc(`user-profiles/${uid}`).update({
-				appointments
-			});
 
 			const appointmentDate = buildDate(appointmentData);
 			const formattedDate = format(appointmentDate, 'dd/MM/yyyy');
@@ -164,6 +175,40 @@ exports.cancelAppointment = functions
 			return sendNotificationToAdmins(notificationPayload);
 		});
 
+async function setUserForAppointment(uid, aid) {
+	const profileData = await db.doc(`user-profiles/${uid}`)
+			.get()
+			.then(ref => ref.data());
+
+	return db.doc(`appointments/${aid}`)
+			.update({uid, name: profileData.name, phone: profileData.phone});
+}
+
+async function addAppointmentToUser(uid, aid) {
+	const userProfileData = await db.doc(`user-profiles/${uid}`)
+			.get()
+			.then(ref => ref.data());
+
+	const appointments = userProfileData.appointments ? userProfileData.appointments : {};
+
+	appointments[aid] = true;
+
+	return db.doc(`user-profiles/${uid}`).update({
+		appointments
+	});
+}
+
+async function removeAppointmentFromUser(uid, aid) {
+	const userProfile = await db.doc(`user-profiles/${uid}`).get();
+	const userProfileData = userProfile.data();
+	const appointments = userProfileData.appointments ? userProfileData.appointments : {};
+
+	delete appointments[aid];
+
+	return db.doc(`user-profiles/${uid}`).update({
+		appointments
+	});
+}
 
 async function addSwapToUser(swapId, uid) {
 	const userProfileDoc = db.doc(`user-profiles/${uid}`);
