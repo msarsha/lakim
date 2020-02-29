@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AngularFirestore, DocumentSnapshot} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {combineLatest, Observable} from 'rxjs';
 import {Appointment, Swap} from '../../models';
 import {fromPromise} from 'rxjs/internal-compatibility';
@@ -35,6 +35,34 @@ export class SwapService {
       })
   );
 
+  incomingRequestsForUser = combineLatest([
+    this.swapsForUser$,
+    this.userService.currentUser$
+  ]).pipe(
+      map(([swaps, user]) => {
+        if (!user || !user.swaps) {
+          return [];
+        }
+
+        const uid = user.id;
+        return swaps.filter(swap => swap.swapWith.uid === uid && !swap['rejected']);
+      })
+  );
+
+  sentRequestsForUser = combineLatest([
+    this.swapsForUser$,
+    this.userService.currentUser$
+  ]).pipe(
+      map(([swaps, user]) => {
+        if (!user || !user.swaps) {
+          return [];
+        }
+
+        const uid = user.id;
+        return swaps.filter(swap => swap.appointment.uid === uid);
+      })
+  );
+
   constructor(private db: AngularFirestore,
               private userService: UserService) {
     this.swapsForUser$.subscribe();
@@ -50,11 +78,20 @@ export class SwapService {
     );
   }
 
-  rejectRequest(swap: Swap) {
-
+  rejectRequest(swap: Swap): Observable<Swap> {
+    return this.setSwapStatus(swap.id, false);
   }
 
   approveRequest(swap: Swap) {
+    return this.setSwapStatus(swap.id, true);
+  }
 
+  private setSwapStatus(swapId: string, approved: boolean): Observable<any> {
+    return fromPromise(this.swapsCollection.doc(swapId)
+        .update({approved, rejected: !approved}));
+  }
+
+  cancelRequest(swap: Swap) {
+    return fromPromise(this.swapsCollection.doc(swap.id).delete());
   }
 }

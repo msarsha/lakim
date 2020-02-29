@@ -20,11 +20,8 @@ exports.addSwap = functions
 			const toUid = swapData.swapWith.uid;
 			const swapId = doc.id;
 
-			await addSwap(swapId, fromUid);
-			await addSwap(swapId, toUid);
-
-			const appointmentDate = buildDate(swapData.swapWith);
-			const formattedDate = format(appointmentDate, 'dd/MM/yyyy');
+			await addSwapToUser(swapId, fromUid);
+			await addSwapToUser(swapId, toUid);
 
 			const notificationPayload = {
 				notification: {
@@ -34,6 +31,59 @@ exports.addSwap = functions
 			};
 
 			return sendNotificationToUser(notificationPayload, toUid);
+		});
+
+async function rejectSwap(swapData, swapId) {
+	const uid = swapData.swapWith.uid;
+
+	await removeSwapFromUser(swapId, uid);
+
+	const notificationPayload = {
+		notification: {
+			title: 'החלפת תור',
+			body: `בקשתך להחלפת תור נדחתה`
+		}
+	};
+
+	return sendNotificationToUser(notificationPayload, uid);
+}
+
+async function approveSwap(swapData, swapId) {
+
+}
+
+exports.updateSwap = functions
+		.firestore
+		.document('swaps/{uid}')
+		.onUpdate(async (doc) => {
+			const swapData = doc.after.data();
+
+			const swapId = doc.after.id;
+
+			if (swapData.approved) {
+				return approveSwap(swapData, swapId);
+			} else if (swapData.rejected) {
+				return rejectSwap(swapData, swapId);
+			}
+		});
+
+exports.cancelSwap = functions
+		.firestore
+		.document('swaps/{sid}')
+		.onDelete(async (swapSnapshot) => {
+			const swapData = swapSnapshot.data();
+
+			await removeSwapFromUser(swapData.id, swapData.appointment.uid);
+			await removeSwapFromUser(swapData.id, swapData.swapWith.uid);
+
+			const notificationPayload = {
+				notification: {
+					title: 'החלפת תור',
+					body: `בקשת תור שהתקבלה בוטלה`
+				}
+			};
+
+			return sendNotificationToUser(notificationPayload, swapData.swapWith.uid);
 		});
 
 exports.signupNotification = functions
@@ -115,7 +165,7 @@ exports.cancelAppointment = functions
 		});
 
 
-async function addSwap(swapId, uid) {
+async function addSwapToUser(swapId, uid) {
 	const userProfileDoc = db.doc(`user-profiles/${uid}`);
 	const userProfileRes = await userProfileDoc.get();
 	const userProfileData = userProfileRes.data();
@@ -126,6 +176,18 @@ async function addSwap(swapId, uid) {
 	return userProfileDoc.update({
 		swaps
 	});
+}
+
+async function removeSwapFromUser(swapId, uid) {
+	const profileData = await db.doc(`user-profiles/${uid}`)
+			.get()
+			.then(ref => ref.data());
+
+	const swaps = profileData.swaps ? profileData.swaps : {};
+	delete swaps[swapId];
+
+	return db.doc(`user-profiles/${uid}`)
+			.update({swaps});
 }
 
 async function sendNotificationToAdmins(payload) {

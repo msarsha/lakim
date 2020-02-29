@@ -16,7 +16,8 @@ import {ToastTypes} from '../../shared/services/toast-types';
 })
 export class SwapsComponent implements OnInit {
 
-  swaps$ = this.swapsService.swapsForUser$;
+  incomingRequests = this.swapsService.incomingRequestsForUser;
+  sentRequests = this.swapsService.sentRequestsForUser;
 
   constructor(private swapsService: SwapService,
               private modalCtrl: ModalController,
@@ -32,8 +33,7 @@ export class SwapsComponent implements OnInit {
   ngOnInit() {
   }
 
-  async openActions(swap: Swap) {
-    console.log(swap);
+  async openActionsForIncoming(swap: Swap) {
     const actionSheet = await this.actionSheetController.create({
       header: `האם לאשר החלפת התור?`,
       buttons: [{
@@ -41,13 +41,39 @@ export class SwapsComponent implements OnInit {
         role: 'destructive',
         icon: 'trash',
         handler: () => {
-          this.swapsService.rejectRequest(swap);
+          this.swapsService.rejectRequest(swap)
+              .subscribe(() => {
+                this.toastService.open(ToastTypes.SWAP_REJECTED);
+              });
         }
       }, {
         text: 'אשר',
         icon: 'swap',
         handler: () => {
           this.swapsService.approveRequest(swap);
+        }
+      }, {
+        text: 'סגור',
+        icon: 'close',
+        role: 'cancel'
+      }]
+    });
+
+    await actionSheet.present();
+  }
+
+  async openActionsForSent(swap: Swap) {
+    const actionSheet = await this.actionSheetController.create({
+      header: `האם לבטל החלפת התור?`,
+      buttons: [{
+        text: 'בטל',
+        role: 'destructive',
+        icon: 'trash',
+        handler: () => {
+          this.swapsService.cancelRequest(swap)
+              .subscribe(() => {
+                this.toastService.open(ToastTypes.SWAP_CANCELED);
+              });
         }
       }, {
         text: 'סגור',
