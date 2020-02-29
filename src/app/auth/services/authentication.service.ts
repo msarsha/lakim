@@ -59,6 +59,9 @@ export class AuthenticationService {
   }
 
   logout(): Observable<any> {
-    return fromPromise(this.fbAuth.auth.signOut());
+    return this.userService.removeCurrentDevice()
+        .pipe(
+            switchMap(() => fromPromise(this.fbAuth.auth.signOut()))
+        );
   }
 }
