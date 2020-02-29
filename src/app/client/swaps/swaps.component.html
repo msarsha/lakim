@@ -2,51 +2,61 @@
 
 <ion-content>
 	<ion-list>
-		<ion-list-header color="primary">
-			בקשות שקיבלתי
-		</ion-list-header>
-		<ion-item *ngFor="let swap of incomingRequests | async" (click)="openActionsForIncoming(swap)">
-			<ion-label>
-				<h4>התור שלי:</h4>
-				<p>
-					{{swap.swapWith.date | date:'EEE dd.MM.yyyy': null: 'he'}}
-					<span>
+		<ng-container *ngIf="incomingRequests | async as incomingRequests">
+			<ion-list-header color="primary">
+				בקשות שקיבלתי
+			</ion-list-header>
+			<ion-item *ngIf="!incomingRequests.length">
+				<p>אין בקשות החלפה פעילות</p>
+			</ion-item>
+			<ion-item *ngFor="let swap of incomingRequests" (click)="openActionsForIncoming(swap)">
+				<ion-label>
+					<h4>התור שלי:</h4>
+					<p>
+						{{swap.swapWith.date | date:'EEE dd.MM.yyyy': null: 'he'}}
+						<span>
 						ב
 					</span>
-					{{swap.swapWith.date | date:'HH:mm': null: 'he'}}
-				</p>
-				<h4>להחלפה עם התור:</h4>
-				<p>
-					{{swap.appointment.date | date:'EEE dd.MM.yyyy': null: 'he'}}
-					<span>
+						{{swap.swapWith.date | date:'HH:mm': null: 'he'}}
+					</p>
+					<h4>להחלפה עם התור:</h4>
+					<p>
+						{{swap.appointment.date | date:'EEE dd.MM.yyyy': null: 'he'}}
+						<span>
 						ב
 					</span>
-					{{swap.appointment.date | date:'HH:mm': null: 'he'}}
-				</p>
-			</ion-label>
-		</ion-item>
-		<ion-list-header color="primary">
-			בקשות ששלחתי
-		</ion-list-header>
-		<ion-item *ngFor="let swap of sentRequests | async" (click)="openActionsForSent(swap)">
-			<ion-label>
-				<h4>התור שלי:</h4>
-				<p>
-					{{swap.appointment.date | date:'EEE dd.MM.yyyy': null: 'he'}}
-					<span>
+						{{swap.appointment.date | date:'HH:mm': null: 'he'}}
+					</p>
+				</ion-label>
+			</ion-item>
+		</ng-container>
+		<ng-container *ngIf="sentRequests | async as sentRequests">
+			<ion-list-header color="primary">
+				בקשות ששלחתי
+			</ion-list-header>
+			<ion-item *ngIf="!sentRequests.length">
+				<p>אין בקשות החלפה פעילות</p>
+			</ion-item>
+			<ion-item *ngFor="let swap of sentRequests" (click)="openActionsForSent(swap)">
+				<ion-label>
+					<h4>התור שאני רוצה להחליף:</h4>
+					<p>
+						{{swap.appointment.date | date:'EEE dd.MM.yyyy': null: 'he'}}
+						<span>
 						ב
 					</span>
-					{{swap.appointment.date | date:'HH:mm': null: 'he'}}
-				</p>
-				<h4>להחלפה עם התור:</h4>
-				<p>
-					{{swap.swapWith.date | date:'EEE dd.MM.yyyy': null: 'he'}}
-					<span>
+						{{swap.appointment.date | date:'HH:mm': null: 'he'}}
+					</p>
+					<h4>להחלפה עם התור:</h4>
+					<p>
+						{{swap.swapWith.date | date:'EEE dd.MM.yyyy': null: 'he'}}
+						<span>
 						ב
 					</span>
-					{{swap.swapWith.date | date:'HH:mm': null: 'he'}}
-				</p>
-			</ion-label>
-		</ion-item>
+						{{swap.swapWith.date | date:'HH:mm': null: 'he'}}
+					</p>
+				</ion-label>
+			</ion-item>
+		</ng-container>
 	</ion-list>
 </ion-content>
