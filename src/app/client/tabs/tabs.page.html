@@ -1,14 +1,14 @@
 <ion-tabs>
 	<ion-tab-bar slot="bottom">
 		<ion-tab-button tab="home">
-			<ion-icon name="clock"></ion-icon>
+			<ion-icon name="home"></ion-icon>
 			<ion-label>התורים שלי</ion-label>
 		</ion-tab-button>
 
 		<ion-tab-button tab="swaps">
-			<ion-icon name="people"></ion-icon>
-			<ion-label>החלפות</ion-label>
-<!--			<ion-badge *ngIf="(numberOfWaitingApproval$ | async) as waitingForApproval">{{waitingForApproval}}</ion-badge>-->
+			<ion-icon name="swap"></ion-icon>
+			<ion-label>החלפות תורים</ion-label>
+			<ion-badge *ngIf="(incomingRequests$ | async) as incomingRequests$">{{incomingRequests$}}</ion-badge>
 		</ion-tab-button>
 	</ion-tab-bar>
 </ion-tabs>

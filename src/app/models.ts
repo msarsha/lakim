@@ -40,4 +40,6 @@ export interface Swap {
   appointment: Appointment;
   swapWith: Appointment;
   createDate: number | Date;
+  approved?: boolean;
+  isRejected?: boolean;
 }

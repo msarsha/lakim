@@ -35,9 +35,8 @@ export class SwapService {
       })
   );
 
-  incomingRequestsForUser = this.buildSwapsObservable('swapWith');
-
-  sentRequestsForUser = this.buildSwapsObservable('appointment');
+  incomingRequestsForUser$ = this.buildSwapsObservable('swapWith', (swap: any) => !swap.isRejected && !swap.approved);
+  sentRequestsForUser$ = this.buildSwapsObservable('appointment', (swap: any) => true);
 
   constructor(private db: AngularFirestore,
               private userService: UserService) {
@@ -68,10 +67,10 @@ export class SwapService {
 
   private setSwapStatus(swapId: string, approved: boolean): Observable<any> {
     return fromPromise(this.swapsCollection.doc(swapId)
-        .update({approved, rejected: !approved}));
+        .update({approved, isRejected: !approved}));
   }
 
-  private buildSwapsObservable(property: string): Observable<Swap[]> {
+  private buildSwapsObservable(property: string, condition: (swap: Swap) => boolean): Observable<Swap[]> {
     return combineLatest([
       this.swapsForUser$,
       this.userService.currentUser$
@@ -82,7 +81,7 @@ export class SwapService {
           }
 
           const uid = user.id;
-          return swaps.filter((swap: any) => swap[property].uid === uid && !swap.rejected && !swap.approved);
+          return swaps.filter((swap: any) => swap[property].uid === uid && condition(swap));
         })
     );
   }

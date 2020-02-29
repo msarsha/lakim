@@ -1,4 +1,6 @@
 import {Component} from '@angular/core';
+import {SwapService} from '../../shared/services/swap.service';
+import {map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-tabs',
@@ -6,7 +8,9 @@ import {Component} from '@angular/core';
   styleUrls: ['tabs.page.scss']
 })
 export class TabsPage {
-  constructor() {
-  }
+  incomingRequests$ = this.swapsService.incomingRequestsForUser$
+      .pipe(map(swaps => swaps.length));
 
+  constructor(private swapsService: SwapService) {
+  }
 }

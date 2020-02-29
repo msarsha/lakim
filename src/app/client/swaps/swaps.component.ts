@@ -16,8 +16,8 @@ import {ToastTypes} from '../../shared/services/toast-types';
 })
 export class SwapsComponent implements OnInit {
 
-  incomingRequests = this.swapsService.incomingRequestsForUser;
-  sentRequests = this.swapsService.sentRequestsForUser;
+  incomingRequests = this.swapsService.incomingRequestsForUser$;
+  sentRequests = this.swapsService.sentRequestsForUser$;
 
   constructor(private swapsService: SwapService,
               private modalCtrl: ModalController,
@@ -34,6 +34,9 @@ export class SwapsComponent implements OnInit {
   }
 
   async openActionsForIncoming(swap: Swap) {
+    if (!this.canPerformOperations(swap)) {
+      return;
+    }
     const actionSheet = await this.actionSheetController.create({
       header: `האם לאשר החלפת התור?`,
       buttons: [{
@@ -63,6 +66,10 @@ export class SwapsComponent implements OnInit {
   }
 
   async openActionsForSent(swap: Swap) {
+    if (!this.canPerformOperations(swap)) {
+      return;
+    }
+
     const actionSheet = await this.actionSheetController.create({
       header: `האם לבטל החלפת התור?`,
       buttons: [{
@@ -83,5 +90,9 @@ export class SwapsComponent implements OnInit {
     });
 
     await actionSheet.present();
+  }
+
+  private canPerformOperations(swap: Swap): boolean {
+    return !swap.approved && !swap.isRejected;
   }
 }
