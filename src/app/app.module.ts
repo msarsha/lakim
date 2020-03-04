@@ -1,4 +1,4 @@
-import {NgModule} from '@angular/core';
+import {NgModule, ErrorHandler} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {RouteReuseStrategy} from '@angular/router';
 
@@ -16,6 +16,8 @@ import {registerLocaleData} from '@angular/common';
 import heLocale from '@angular/common/locales/he';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard';
+import {AngularFireAnalyticsModule, ScreenTrackingService, UserTrackingService} from '@angular/fire/analytics';
+import {ErrorLoggerService} from './shared/services/error-logger.service';
 
 registerLocaleData(heLocale);
 
@@ -29,12 +31,16 @@ registerLocaleData(heLocale);
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    AngularFireAuthGuardModule
+    AngularFireAuthGuardModule,
+    AngularFireAnalyticsModule
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
+    UserTrackingService,
+    ScreenTrackingService,
+    {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
+    {provide: ErrorHandler, useClass: ErrorLoggerService}
   ],
   bootstrap: [AppComponent]
 })
