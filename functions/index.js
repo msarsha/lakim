@@ -33,44 +33,6 @@ exports.addSwap = functions
 			return sendNotificationToUser(notificationPayload, toUid);
 		});
 
-async function rejectSwap(swapData, swapId) {
-	const uid = swapData.swapWith.uid;
-
-	await removeSwapFromUser(swapId, uid);
-
-	const notificationPayload = {
-		notification: {
-			title: 'החלפת תור',
-			body: `בקשתך להחלפת תור נדחתה`
-		}
-	};
-
-	return sendNotificationToUser(notificationPayload, uid);
-}
-
-async function approveSwap(swapData) {
-	// remove appointments ref from userProfile.appointments (for both users)
-	await removeAppointmentFromUser(swapData.appointment.uid, swapData.appointment.id);
-	await removeAppointmentFromUser(swapData.swapWith.uid, swapData.swapWith.id);
-
-	// swap uid in both appointments
-	await setUserForAppointment(swapData.appointment.uid, swapData.swapWith.id);
-	await setUserForAppointment(swapData.swapWith.uid, swapData.appointment.id);
-
-	// add appointment id ref in userProfiles.appointments (for both users)
-	await addAppointmentToUser(swapData.appointment.uid, swapData.swapWith.id);
-	await addAppointmentToUser(swapData.swapWith.uid, swapData.appointment.id);
-
-	// send push to swap.appointment.uid that swap approved
-	const notificationPayload = {
-		notification: {
-			title: 'החלפת תור',
-			body: `החלפת תור אושרה`
-		}
-	};
-
-	return sendNotificationToUser(notificationPayload, swapData.appointment.uid);
-}
 
 exports.updateSwap = functions
 		.firestore
@@ -153,6 +115,7 @@ exports.cancelAppointment = functions
 		.firestore
 		.document('appointments/{aid}')
 		.onDelete(async (snap, context) => {
+			console.log(context.authType);
 			const aid = snap.id;
 			const uid = snap.data().uid;
 			const appointmentData = snap.data();
@@ -165,6 +128,18 @@ exports.cancelAppointment = functions
 			const appointmentDate = buildDate(appointmentData);
 			const formattedDate = format(appointmentDate, 'dd/MM/yyyy');
 			const formattedHour = format(appointmentDate, 'HH:mm');
+
+			if(context.auth && context.auth.uid !== uid) {
+				const notificationPayload = {
+					notification: {
+						title: 'תור בוטל',
+						body: ` בעל העסק ביטל את התור של תאריך: ${formattedDate} בשעה ${formattedHour}`
+					}
+				};
+
+				await sendNotificationToUser(notificationPayload, uid);
+			}
+
 			const notificationPayload = {
 				notification: {
 					title: 'תור בוטל',
@@ -208,6 +183,45 @@ async function removeAppointmentFromUser(uid, aid) {
 	return db.doc(`user-profiles/${uid}`).update({
 		appointments
 	});
+}
+
+async function rejectSwap(swapData, swapId) {
+	const uid = swapData.swapWith.uid;
+
+	await removeSwapFromUser(swapId, uid);
+
+	const notificationPayload = {
+		notification: {
+			title: 'החלפת תור',
+			body: `בקשתך להחלפת תור נדחתה`
+		}
+	};
+
+	return sendNotificationToUser(notificationPayload, uid);
+}
+
+async function approveSwap(swapData) {
+	// remove appointments ref from userProfile.appointments (for both users)
+	await removeAppointmentFromUser(swapData.appointment.uid, swapData.appointment.id);
+	await removeAppointmentFromUser(swapData.swapWith.uid, swapData.swapWith.id);
+
+	// swap uid in both appointments
+	await setUserForAppointment(swapData.appointment.uid, swapData.swapWith.id);
+	await setUserForAppointment(swapData.swapWith.uid, swapData.appointment.id);
+
+	// add appointment id ref in userProfiles.appointments (for both users)
+	await addAppointmentToUser(swapData.appointment.uid, swapData.swapWith.id);
+	await addAppointmentToUser(swapData.swapWith.uid, swapData.appointment.id);
+
+	// send push to swap.appointment.uid that swap approved
+	const notificationPayload = {
+		notification: {
+			title: 'החלפת תור',
+			body: `החלפת תור אושרה`
+		}
+	};
+
+	return sendNotificationToUser(notificationPayload, swapData.appointment.uid);
 }
 
 async function addSwapToUser(swapId, uid) {
