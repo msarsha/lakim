@@ -12,6 +12,6 @@ export class ErrorLoggerService extends ErrorHandler {
 
   handleError(error: any): void {
     const analytics = this.injector.get(AngularFireAnalytics);
-    analytics.logEvent('[ErrorService]', {error});
+    analytics.logEvent('errorService', {error});
   }
 }
