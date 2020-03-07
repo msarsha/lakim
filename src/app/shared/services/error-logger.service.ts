@@ -1,5 +1,5 @@
 import {ErrorHandler, Injectable, Injector} from '@angular/core';
-import {AngularFireAnalytics} from '@angular/fire/analytics';
+import {AngularFirestore} from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,12 @@ export class ErrorLoggerService extends ErrorHandler {
   }
 
   handleError(error: any): void {
-    const analytics = this.injector.get(AngularFireAnalytics);
-    analytics.logEvent('errorService', {error});
+    const db = this.injector.get(AngularFirestore);
+    if (db) {
+      const log = Object.keys(error)
+          .filter(key => error.hasOwnProperty(key) && typeof (error[key]) === 'string' )
+          .map(key => error[key]);
+      db.collection('logs').add({log});
+    }
   }
 }

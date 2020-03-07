@@ -16,7 +16,6 @@ import {registerLocaleData} from '@angular/common';
 import heLocale from '@angular/common/locales/he';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard';
-import {AngularFireAnalyticsModule, ScreenTrackingService, UserTrackingService} from '@angular/fire/analytics';
 import {ErrorLoggerService} from './shared/services/error-logger.service';
 
 registerLocaleData(heLocale);
@@ -31,14 +30,11 @@ registerLocaleData(heLocale);
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    AngularFireAuthGuardModule,
-    AngularFireAnalyticsModule
+    AngularFireAuthGuardModule
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    UserTrackingService,
-    ScreenTrackingService,
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     {provide: ErrorHandler, useClass: ErrorLoggerService}
   ],

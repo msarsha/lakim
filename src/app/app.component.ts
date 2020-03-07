@@ -3,9 +3,8 @@ import {Component, OnInit} from '@angular/core';
 import {Platform} from '@ionic/angular';
 import {SplashScreen} from '@ionic-native/splash-screen/ngx';
 import {StatusBar} from '@ionic-native/status-bar/ngx';
-import {Router} from '@angular/router';
-import {AngularFireAnalytics} from '@angular/fire/analytics';
-
+import {NavigationError, Router} from '@angular/router';
+import {AngularFirestore} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +17,7 @@ export class AppComponent implements OnInit {
       private splashScreen: SplashScreen,
       private statusBar: StatusBar,
       private router: Router,
-      private analytics: AngularFireAnalytics
+      private db: AngularFirestore
   ) {
     this.initializeApp();
     this.subscribeRouterEvents();
@@ -37,7 +36,12 @@ export class AppComponent implements OnInit {
 
   private subscribeRouterEvents() {
     this.router.events.subscribe(event => {
-      this.analytics.logEvent('route', {event});
+      if (event instanceof NavigationError) {
+        const log = Object.keys(event)
+            .filter(key => event.hasOwnProperty(key) && typeof (event[key]) === 'string')
+            .map(key => event[key]);
+        this.db.collection('logs').add({log});
+      }
     });
   }
 }
