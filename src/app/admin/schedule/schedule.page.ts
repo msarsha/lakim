@@ -1,9 +1,7 @@
 import {Component} from '@angular/core';
 import {weekDays, timeIntervals, SettingsService} from '../../shared/services/settings.service';
-import {distinctUntilChanged, map} from 'rxjs/operators';
+import {distinctUntilChanged, map, tap} from 'rxjs/operators';
 import {combineLatest, Observable} from 'rxjs';
-import {Settings} from '../../models';
-import {ScheduleService} from '../../shared/services/schedule.service';
 
 @Component({
   selector: 'app-tab2',

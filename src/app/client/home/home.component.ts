@@ -76,7 +76,6 @@ export class HomeComponent implements OnInit {
         icon: 'swap',
         handler: () => {
           const data = this.createAppointment(true, appointment);
-          console.log(data);
         }
       }, {
         text: 'סגור',

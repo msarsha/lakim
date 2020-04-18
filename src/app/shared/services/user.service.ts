@@ -31,14 +31,12 @@ export class UserService {
             switchMap((token) => {
               const user = this.getUser();
               const filteredDevices = user.devices.filter(device => device !== token);
-              console.log(filteredDevices, user.devices);
               return fromPromise(
                   this.db.doc(`user-profiles/${user.id}`)
                       .update({devices: filteredDevices})
               );
             }),
             catchError((err) => {
-              console.log(err);
               return of(null);
             })
         );

@@ -40,8 +40,8 @@ export class SettingsService {
               map(settings => settings.workingHours),
               map(({from, to}: { from: HoursMinutesPair, to: HoursMinutesPair }) => {
                 const today = new Date();
-                const fromISO = this.setHoursAndMinutes(today, from);
-                const toISO = this.setHoursAndMinutes(today, to);
+                const fromISO = this.applyUTCTimeToDate(today, from);
+                const toISO = this.applyUTCTimeToDate(today, to);
 
                 return {
                   from: fromISO,
@@ -102,9 +102,15 @@ export class SettingsService {
     this.setWorkingHoursBS.next({pair, key});
   }
 
-  private setHoursAndMinutes(today: Date, pair: HoursMinutesPair): string {
-    const withHours = setHours(today, pair.hours as number);
-    const withMinutes = setMinutes(withHours, pair.minutes as number);
-    return `${formatISO(withMinutes)}Z`;
+  private applyUTCTimeToDate(today: Date, pair: HoursMinutesPair): string {
+    const asUTCTime = today.setUTCHours(Number(pair.hours), Number(pair.minutes));
+    return new Date(asUTCTime).toISOString();
+  }
+
+  private timeToDate(time: string): Date {
+    const [hours, minutes] = time.split(':');
+    const today = new Date();
+    const withHours = setHours(today, Number(hours));
+    return setMinutes(withHours, Number(minutes));
   }
 }

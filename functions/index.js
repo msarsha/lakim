@@ -115,7 +115,6 @@ exports.cancelAppointment = functions
 		.firestore
 		.document('appointments/{aid}')
 		.onDelete(async (snap, context) => {
-			console.log(context.authType);
 			const aid = snap.id;
 			const uid = snap.data().uid;
 			const appointmentData = snap.data();

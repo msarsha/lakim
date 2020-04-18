@@ -77,7 +77,6 @@ export class SelectAppointmentModalComponent implements OnInit {
           }, {
             text: 'כן',
             handler: () => {
-              console.log(this.appointmentToSwap, this.selectedPair);
               this.swapService
                   .createSwap(this.appointmentToSwap, this.selectedPair as Appointment)
                   .subscribe(() => {

@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {HoursMinutesPair, Settings} from '../../models';
 import {SettingsService} from './settings.service';
 import {map} from 'rxjs/operators';
+import {fromUTCWorkingHours} from '../date-helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +18,11 @@ export class ScheduleService {
     return this.settingsService.getSettings()
         .pipe(
             map((settings: Settings) => {
+              const localHours = fromUTCWorkingHours(settings.workingHours);
               return this.buildWorkingHours(
                   settings.appointmentTime,
-                  settings.workingHours.from as HoursMinutesPair,
-                  settings.workingHours.to as HoursMinutesPair
+                  localHours.from as HoursMinutesPair,
+                  localHours.to as HoursMinutesPair
               );
             })
         );
