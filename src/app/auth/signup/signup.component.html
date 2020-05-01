@@ -1,17 +1,45 @@
-<ion-content color="primary">
-  <form class="login-container" [formGroup]="form" (ngSubmit)="signup()">
-    <ion-input inputmode="email" placeholder="אימייל" formControlName="email"></ion-input>
-    <ion-input placeholder="שם מלא" formControlName="name"></ion-input>
-    <ion-input placeholder="מספר פלאפון" formControlName="phone"></ion-input>
-    <ion-input placeholder="סיסמא" type="password" formControlName="password"></ion-input>
+<ion-content>
+	<ion-header translucent>
+		<ion-toolbar>
+			<ion-title>הרשמה</ion-title>
+		</ion-toolbar>
+	</ion-header>
 
-    <ion-button color="secondary" type="submit">הירשם</ion-button>
-
-    <div class="login-container__login">
-      <h5>
-        יש לי חשבון
-      </h5>
-      <ion-button color="secondary" fill="outline" routerDirection="root" routerLink="../login">לכניסה</ion-button>
-    </div>
-  </form>
+	<form class="" [formGroup]="form" (ngSubmit)="signup()">
+		<ion-list>
+			<ion-item>
+				<ion-label position="floating">אימייל</ion-label>
+				<ion-input inputmode="email" formControlName="email"></ion-input>
+				<ion-text class="validation-error" color="danger" *ngIf="emailControl.touched && emailControl.errors.pattern">
+					<span>אימייל לא תקין</span>
+				</ion-text>
+			</ion-item>
+			<ion-item>
+				<ion-label position="floating">שם מלא</ion-label>
+				<ion-input formControlName="name"></ion-input>
+			</ion-item>
+			<ion-item>
+				<ion-label position="floating">מספר פלאפון</ion-label>
+				<ion-input formControlName="phone"></ion-input>
+			</ion-item>
+			<ion-item>
+				<ion-label position="floating">סיסמא</ion-label>
+				<ion-input type="password" formControlName="password"></ion-input>
+				<ion-text class="validation-error" color="danger"
+									*ngIf="passwordControl.touched && passwordControl.errors.minlength">
+					<span>
+					לפחות 6 תווים
+					</span>
+				</ion-text>
+			</ion-item>
+		</ion-list>
+		<div class="ion-padding">
+			<ion-button [disabled]="loading || form.invalid" color="primary" type="submit" expand="block">הירשם</ion-button>
+		</div>
+		<div class="login-container__login">
+			<ion-button [disabled]="loading" color="secondary" fill="outline" routerDirection="root" routerLink="../login">
+				יש לי חשבון
+			</ion-button>
+		</div>
+	</form>
 </ion-content>

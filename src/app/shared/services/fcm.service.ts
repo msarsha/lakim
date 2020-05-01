@@ -27,7 +27,10 @@ export class FCMProvider {
   }
 
   getToken(): Observable<string> {
-    return fromPromise(fcm.getToken())
+    return fromPromise(fcm.getToken()
+        .catch(() => {
+          return {token: 'no token'};
+        }))
         .pipe(map(res => res.token));
   }
 

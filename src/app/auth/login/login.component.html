@@ -5,12 +5,9 @@
 		<ion-input formControlName="password" type="password" autocomplete="off"
 							 placeholder="סיסמא"></ion-input>
 
-		<ion-button color="secondary" type="submit">כנס</ion-button>
+		<ion-button [disabled]="form.invalid" color="secondary" type="submit">כנס</ion-button>
 		<div class="login-container__signup">
-			<h5>
-				אין לי חשבון
-			</h5>
-			<ion-button type="submit" color="secondary" fill="outline" routerDirection="root" routerLink="../signup">להרשמה</ion-button>
+			<ion-button [disabled]="loading" type="submit" color="secondary" fill="outline" routerDirection="root" routerLink="../signup">אין לי חשבון</ion-button>
 		</div>
 	</form>
 </ion-content>

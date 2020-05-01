@@ -7,6 +7,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ToastService} from '../../shared/services/toast.service';
 import {ToastTypes} from '../../shared/services/toast-types';
 import {FCMProvider} from '../../shared/services/fcm.service';
+import {finalize} from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -15,9 +16,10 @@ import {FCMProvider} from '../../shared/services/fcm.service';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
+  loading = false;
   form = this.fb.group({
     email: ['', Validators.required],
-    password: ['', Validators.required]
+    password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
   constructor(private fb: FormBuilder,
@@ -32,15 +34,21 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   login() {
     if (this.form.valid) {
+      this.loading = true;
       this.auth.login(this.form.value)
-          .pipe(untilDestroyed(this))
+          .pipe(
+              untilDestroyed(this),
+              finalize(() => {
+                this.loading = false;
+              })
+          )
           .subscribe(async (user: Customer) => {
             this.fcm.addDeviceIfNeeded(user);
 
             if (user.isAdmin) {
-              this.router.navigate(['admin']);
+              await this.router.navigate(['admin']);
             } else if (user.approved) {
-              this.router.navigate(['client']);
+              await this.router.navigate(['client']);
             } else {
               await this.toastService.open(ToastTypes.NOT_APPROVED);
             }
