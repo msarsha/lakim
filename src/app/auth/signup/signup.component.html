@@ -4,34 +4,27 @@
 			<ion-title>הרשמה</ion-title>
 		</ion-toolbar>
 	</ion-header>
-
-	<form class="" [formGroup]="form" (ngSubmit)="signup()">
+	<form [formGroup]="form" (ngSubmit)="signup()">
 		<ion-list>
 			<ion-item>
-				<ion-label position="floating">אימייל</ion-label>
+				<ion-label position="floating" color="primary">אימייל</ion-label>
 				<ion-input inputmode="email" formControlName="email"></ion-input>
-				<ion-text class="validation-error" color="danger" *ngIf="emailControl.touched && emailControl.errors.pattern">
-					<span>אימייל לא תקין</span>
-				</ion-text>
 			</ion-item>
 			<ion-item>
-				<ion-label position="floating">שם מלא</ion-label>
+				<ion-label position="floating" color="primary">שם מלא</ion-label>
 				<ion-input formControlName="name"></ion-input>
 			</ion-item>
 			<ion-item>
-				<ion-label position="floating">מספר פלאפון</ion-label>
+				<ion-label position="floating" color="primary">מספר פלאפון</ion-label>
 				<ion-input formControlName="phone"></ion-input>
 			</ion-item>
 			<ion-item>
-				<ion-label position="floating">סיסמא</ion-label>
+				<ion-label position="floating" color="primary">סיסמא</ion-label>
 				<ion-input type="password" formControlName="password"></ion-input>
-				<ion-text class="validation-error" color="danger"
-									*ngIf="passwordControl.touched && passwordControl.errors.minlength">
-					<span>
-					לפחות 6 תווים
-					</span>
-				</ion-text>
 			</ion-item>
+			<ion-text class="validation-error" color="warning">
+				<span>לפחות 6 תווים</span>
+			</ion-text>
 		</ion-list>
 		<div class="ion-padding">
 			<ion-button [disabled]="loading || form.invalid" color="primary" type="submit" expand="block">הירשם</ion-button>

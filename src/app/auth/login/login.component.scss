@@ -6,19 +6,14 @@
 	color: white;
 	font-weight: 700;
 
-	ion-input {
-		flex: 0;
-		margin-top: 5px;
-		margin-bottom: 5px;
-		text-align: center;
-		--background: #ef44ff91;
-		--placeholder-color: #fff;
-	}
-
 	&__signup {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		margin-top: 50px;
 	}
+}
+
+.validation-error {
+	font-size: 0.8em;
+	margin-bottom: 3px;
 }

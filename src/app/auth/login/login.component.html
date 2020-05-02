@@ -1,13 +1,27 @@
-<ion-content color="primary">
-	<form class="login-container" (ngSubmit)="login()" [formGroup]="form">
-		<ion-input formControlName="email" autocomplete="off" inputmode="email"
-							 placeholder="אימייל"></ion-input>
-		<ion-input formControlName="password" type="password" autocomplete="off"
-							 placeholder="סיסמא"></ion-input>
-
-		<ion-button [disabled]="form.invalid" color="secondary" type="submit">כנס</ion-button>
+<ion-content>
+	<ion-header translucent>
+		<ion-toolbar>
+			<ion-title>כניסה</ion-title>
+		</ion-toolbar>
+	</ion-header>
+	<form (ngSubmit)="login()" [formGroup]="form">
+		<ion-list>
+			<ion-item>
+				<ion-label position="floating" color="primary">אימייל</ion-label>
+				<ion-input inputmode="email" formControlName="email"></ion-input>
+			</ion-item>
+			<ion-item>
+				<ion-label position="floating" color="primary">סיסמא</ion-label>
+				<ion-input type="password" formControlName="password"></ion-input>
+			</ion-item>
+		</ion-list>
+		<div class="ion-padding">
+			<ion-button [disabled]="loading || form.invalid" color="primary" type="submit" expand="block">כנס</ion-button>
+		</div>
 		<div class="login-container__signup">
-			<ion-button [disabled]="loading" type="submit" color="secondary" fill="outline" routerDirection="root" routerLink="../signup">אין לי חשבון</ion-button>
+			<ion-button [disabled]="loading" color="secondary" fill="outline" routerDirection="root" routerLink="../signup">
+				אין לי חשבון
+			</ion-button>
 		</div>
 	</form>
 </ion-content>

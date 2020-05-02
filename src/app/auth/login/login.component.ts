@@ -1,35 +1,31 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {AuthenticationService} from '../services/authentication.service';
 import {Router} from '@angular/router';
 import {Customer} from '../../models';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {ToastService} from '../../shared/services/toast.service';
-import {ToastTypes} from '../../shared/services/toast-types';
 import {FCMProvider} from '../../shared/services/fcm.service';
-import {finalize} from 'rxjs/operators';
+import {finalize, take} from 'rxjs/operators';
+import {AlertController} from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnDestroy {
 
   loading = false;
   form = this.fb.group({
-    email: ['', Validators.required],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    email: ['', {validators: [Validators.required, Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')]}],
+    password: ['', {validators: [Validators.required]}]
   });
 
   constructor(private fb: FormBuilder,
               private auth: AuthenticationService,
               private router: Router,
-              private toastService: ToastService,
+              private alertController: AlertController,
               private fcm: FCMProvider) {
-  }
-
-  ngOnInit() {
   }
 
   login() {
@@ -37,6 +33,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.loading = true;
       this.auth.login(this.form.value)
           .pipe(
+              take(1),
               untilDestroyed(this),
               finalize(() => {
                 this.loading = false;
@@ -50,8 +47,20 @@ export class LoginComponent implements OnInit, OnDestroy {
             } else if (user.approved) {
               await this.router.navigate(['client']);
             } else {
-              await this.toastService.open(ToastTypes.NOT_APPROVED);
+              const alert = await this.alertController.create({
+                header: 'אין הרשאה',
+                message: 'נא צור קשר עם בעל העסק',
+                buttons: ['טוב']
+              });
+              await alert.present();
             }
+          }, async () => {
+            const alert = await this.alertController.create({
+              header: 'אימייל או סיסמא לא נכונים',
+              buttons: ['טוב']
+            });
+
+            await alert.present();
           });
     }
   }

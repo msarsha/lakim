@@ -6,8 +6,8 @@ android {
         applicationId "com.lakim.sarsha"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 10
-        versionName "1.8"
+        versionCode 15
+        versionName "1.13"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -17,7 +17,7 @@ android {
         }
     }
 }
-
+//
 repositories {
     maven {
         url  "https://dl.bintray.com/ionic-team/capacitor"
