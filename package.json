@@ -13,6 +13,7 @@
     "run:ios": "ionic capacitor run ios -l --address=0.0.0.0",
     "run:android": "ionic capacitor run android --livereload --external",
     "run:android:device": "ionic capacitor run android --livereload",
+    "open:android": "ionic build android && ionic cap sync && ionic cap open android",
     "deploy": "ionic build && firebase deploy"
   },
   "private": true,
