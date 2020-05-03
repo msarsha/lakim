@@ -4,10 +4,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.lakim.sarsha"
-        minSdkVersion 21
+//        minSdkVersion 21
         targetSdkVersion 28
-//        versionCode 16
-        versionName "1.14"
+        versionCode 17
+        versionName "1.15"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
