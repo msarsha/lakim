@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AppointmentService} from '../../shared/services/appointment.service';
-import {ActionSheetController, ModalController} from '@ionic/angular';
+import {ActionSheetController, ModalController, NavController} from '@ionic/angular';
 import {SelectAppointmentModalComponent} from '../select-appointment-modal/select-appointment-modal.component';
 import {Appointment, Customer} from '../../models';
 import {DatePipe} from '@angular/common';
@@ -25,17 +25,19 @@ export class HomeComponent implements OnInit {
               private datePipe: DatePipe,
               private toastService: ToastService,
               private userService: UserService,
-              private router: Router
+              private router: Router,
+              private nav: NavController
   ) {
     userService.currentUser$
         .subscribe((user: Customer) => {
           if (user && user.isAdmin) {
-            router.navigate(['admin']);
+            router.navigate(['admin'], { replaceUrl: true });
           }
         });
   }
 
   ngOnInit() {
+    this.nav.pop();
   }
 
   async createAppointment(swap?: boolean, appointment?: Appointment): Promise<any> {

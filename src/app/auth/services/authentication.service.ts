@@ -64,4 +64,12 @@ export class AuthenticationService {
             switchMap(() => fromPromise(this.fbAuth.auth.signOut()))
         );
   }
+
+  resetPassword(email: string): Observable<any>{
+    return fromPromise(this.fbAuth.auth.sendPasswordResetEmail(email));
+  }
+
+  confirmPassword(code: string, newPass: string): Observable<any>{
+    return fromPromise(this.fbAuth.auth.confirmPasswordReset(code, newPass));
+  }
 }

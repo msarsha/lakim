@@ -6,7 +6,7 @@ import {Customer} from '../../models';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {FCMProvider} from '../../shared/services/fcm.service';
 import {finalize, take} from 'rxjs/operators';
-import {AlertController} from '@ionic/angular';
+import {AlertController, NavController} from '@ionic/angular';
 
 @Component({
   selector: 'app-login',

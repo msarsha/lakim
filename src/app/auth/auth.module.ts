@@ -6,10 +6,11 @@ import {IonicModule} from '@ionic/angular';
 import {LoginComponent} from './login/login.component';
 import {SignupComponent} from './signup/signup.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import {ResetComponent} from './reset/reset.component';
 
 
 @NgModule({
-  declarations: [LoginComponent, SignupComponent],
+  declarations: [LoginComponent, SignupComponent, ResetComponent],
   imports: [
     CommonModule,
     IonicModule,

@@ -1,0 +1,25 @@
+<ion-content>
+	<ion-header translucent>
+		<ion-toolbar>
+			<ion-title>איפוס סיסמא</ion-title>
+		</ion-toolbar>
+	</ion-header>
+	<form (ngSubmit)="reset()" [formGroup]="form">
+		<ion-list>
+			<ion-item>
+				<ion-label position="floating" color="primary">אימייל</ion-label>
+				<ion-input inputmode="email" formControlName="email"></ion-input>
+			</ion-item>
+		</ion-list>
+		<div class="ion-padding">
+			<ion-button [disabled]="form.invalid" color="primary" type="submit" expand="block">
+				אפס סיסמא
+			</ion-button>
+		</div>
+		<div class="login-container__signup">
+			<ion-button color="secondary" fill="outline" routerDirection="root" routerLink="../login">
+				חזור
+			</ion-button>
+		</div>
+	</form>
+</ion-content>
